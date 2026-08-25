@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flower Cycle Lighting Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E0C; --panel:#131A16; --panel-2:#1A231D; --line:#26312A;
+    --text:#EDEAE0; --text-dim:#96A39A; --text-faint:#5C6961;
+    --ch-main:#F2EDE0; --ch-red:#D6304A; --ch-farred:#7A3340; --ch-uv:#8D6FE0;
+    --zone-veg:#1A231D; --zone-early:#3A2429; --zone-late:#4A2530;
+    --off:#3A433D; --radius:10px;
+  }
+  html[data-theme="light"]{
+    --bg:#F7F4EC; --panel:#FFFFFF; --panel-2:#F0EBDD; --line:#DFD8C4;
+    --text:#1C1F19; --text-dim:#5B6157; --text-faint:#8D9186;
+    --ch-main:#C9A961; --ch-red:#C4223F; --ch-farred:#6B2A35; --ch-uv:#6E4FC4;
+    --zone-veg:#F0EBDD; --zone-early:#F2DEDF; --zone-late:#EBC9CD;
+    --off:#D9D2BE;
+  }
+  html{transition:background .25s ease;}
+  body{transition:background .25s ease,color .25s ease;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;padding:28px 20px 60px;-webkit-font-smoothing:antialiased;}
+  body[data-lang="zh"]{font-family:'Noto Sans SC','IBM Plex Sans',sans-serif;}
+  body[data-lang="zh"] .mono{font-family:'Noto Sans SC','IBM Plex Mono',monospace;}
+  .wrap{max-width:980px;margin:0 auto;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  button{font-family:inherit;cursor:pointer;}
+  button:focus-visible, .tab:focus-visible{outline:2px solid var(--ch-red);outline-offset:2px;}
+
+  header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:22px;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ch-red);margin:0 0 6px;}
+  body[data-lang="zh"] .eyebrow{font-family:'Noto Sans SC',sans-serif;letter-spacing:.04em;}
+  h1{font-size:26px;margin:0 0 4px;font-weight:600;letter-spacing:-.01em;}
+  .sub{color:var(--text-dim);font-size:13.5px;margin:0;}
+
+  .header-controls{display:flex;align-items:center;gap:10px;}
+  .theme-btn{width:34px;height:34px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line);border-radius:999px;color:var(--text-dim);transition:border-color .18s,color .18s;}
+  .theme-btn:hover{border-color:var(--text-faint);color:var(--text);}
+  .theme-btn svg{width:16px;height:16px;}
+  .lang-btn{height:34px;padding:0 14px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line);border-radius:999px;color:var(--text-dim);font-size:12.5px;font-weight:600;transition:border-color .18s,color .18s;}
+  .lang-btn:hover{border-color:var(--text-faint);color:var(--text);}
+  .fx-toggle{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;}
+  .fx-toggle button{border:none;background:transparent;color:var(--text-dim);font-size:12px;padding:7px 12px;border-radius:999px;transition:background .18s,color .18s;}
+  .fx-toggle button.active{background:var(--ch-red);color:#1A0507;font-weight:600;}
+  .fx-warn{display:none;align-items:flex-start;gap:10px;background:var(--zone-early);border:1px solid var(--ch-red);border-radius:var(--radius);padding:14px 16px;margin-bottom:20px;font-size:12.5px;line-height:1.55;color:var(--text);}
+  .fx-warn.show{display:flex;}
+  .fx-warn svg{flex:0 0 auto;width:18px;height:18px;color:var(--ch-red);margin-top:1px;}
+
+  .rail{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:22px;scrollbar-width:thin;}
+  .tab{flex:0 0 auto;min-width:86px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px 8px;text-align:center;transition:border-color .18s,background .18s,transform .18s;}
+  .tab:hover{border-color:var(--text-faint);}
+  .tab.active{background:var(--panel-2);border-color:var(--ch-red);}
+  .tab .wk{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);}
+  .tab.active .wk{color:var(--ch-red);}
+  .tab .days{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text-faint);opacity:.75;margin-top:1px;}
+  .tab .ph{font-size:11px;color:var(--text-dim);margin-top:3px;line-height:1.2;}
+
+  .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-bottom:16px;}
+  @media(max-width:760px){.grid{grid-template-columns:1fr;}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+  .panel h2{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);margin:0 0 16px;font-weight:600;}
+  body[data-lang="zh"] .panel h2{letter-spacing:.03em;}
+
+  #spd{width:100%;height:auto;}
+  .spec-readout{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;margin-top:8px;}
+  body[data-lang="zh"] .spec-readout{font-family:'Noto Sans SC',sans-serif;}
+  .spec-caption{font-size:11px;color:var(--text-faint);line-height:1.5;margin-top:4px;margin-bottom:14px;}
+
+  .spec-track{position:relative;height:26px;border-radius:6px;overflow:hidden;border:1px solid var(--line);display:flex;margin-top:6px;}
+  .spec-zone{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint);}
+  body[data-lang="zh"] .spec-zone{font-size:10px;text-transform:none;letter-spacing:0;}
+  .spec-zone[data-z="veg"]{background:var(--zone-veg);}
+  .spec-zone[data-z="early"]{background:var(--zone-early);}
+  .spec-zone[data-z="late"]{background:var(--zone-late);}
+  .spec-marker{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--text);border-radius:2px;transition:left .35s ease;box-shadow:0 0 0 2px var(--bg);}
+  .spec-track-labels{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--text-faint);margin-top:4px;}
+
+  .chan-share{margin-top:20px;padding-top:16px;border-top:1px dashed var(--line);}
+  .chan-share-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);margin-bottom:9px;}
+  body[data-lang="zh"] .chan-share-label{text-transform:none;letter-spacing:.02em;}
+  .strip{height:30px;border-radius:6px;overflow:hidden;display:flex;border:1px solid var(--line);}
+  .seg{height:100%;transition:flex-basis .45s ease;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--text-dim);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .sw{width:9px;height:9px;border-radius:2px;display:inline-block;}
+
+  .timeline{margin-top:16px;}
+  .tl-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .lo-picker{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px dashed var(--line);}
+  .lo-label{font-size:11px;color:var(--text-dim);flex:0 0 auto;}
+  .lo-presets{display:flex;gap:4px;flex-wrap:wrap;}
+  .lo-presets button{font-size:10.5px;padding:5px 9px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);color:var(--text-dim);font-family:'IBM Plex Mono',monospace;transition:border-color .18s,color .18s,background .18s;}
+  .lo-presets button:hover{border-color:var(--text-faint);}
+  .lo-presets button.active{background:var(--ch-red);color:#1A0507;border-color:var(--ch-red);font-weight:600;}
+  .lo-custom{font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:5px 8px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);}
+  .tl-label{width:58px;font-size:11px;color:var(--text-dim);flex:0 0 auto;}
+  .tl-track{position:relative;flex:1;height:16px;background:var(--panel-2);border-radius:4px;border:1px solid var(--line);}
+  .tl-block{position:absolute;top:1px;bottom:1px;border-radius:3px;transition:left .35s ease,width .35s ease;}
+  .tl-marks{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--text-faint);margin-top:4px;}
+
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .stat{padding:14px;background:var(--panel-2);border-radius:8px;border:1px solid var(--line);}
+  .stat .lbl{font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+  body[data-lang="zh"] .stat .lbl{text-transform:none;letter-spacing:.02em;}
+  .stat .val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;line-height:1;}
+  body[data-lang="zh"] .stat .val{font-family:'Noto Sans SC',sans-serif;font-size:18px;}
+  .stat .note{font-size:11px;color:var(--text-dim);margin-top:6px;line-height:1.4;}
+  .stat.wide{grid-column:1/-1;}
+
+  .env-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media(max-width:760px){.env-grid{grid-template-columns:repeat(2,1fr);}}
+  .env-cell{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:12px;text-align:center;}
+  .env-cell .lbl{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+  body[data-lang="zh"] .env-cell .lbl{text-transform:none;}
+  .env-cell .val{font-family:'IBM Plex Mono',monospace;font-size:13.5px;}
+  body[data-lang="zh"] .env-cell .val{font-family:'Noto Sans SC',sans-serif;font-size:12.5px;}
+
+  .arc-strips{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:10px;}
+  .arc-strip{height:14px;border-radius:3px;overflow:hidden;display:flex;border:1px solid var(--line);cursor:pointer;opacity:.55;transition:opacity .18s;}
+  .arc-strip.active,.arc-strip:hover{opacity:1;}
+  .arc-nums{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:4px;}
+  .arc-nums span{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--text-faint);}
+  body[data-lang="zh"] .arc-nums span{font-family:'Noto Sans SC',sans-serif;}
+
+  .rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:760px){.rules-grid{grid-template-columns:1fr;}}
+  .rule-cat{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:9px;}
+  body[data-lang="zh"] .rule-cat{text-transform:none;}
+  .rule-group ul{list-style:none;padding:0;margin:0 0 4px;}
+  .rule-group li{font-size:12.5px;color:var(--text-dim);line-height:1.5;padding-left:14px;position:relative;margin-bottom:7px;}
+  .rule-group li::before{content:'—';position:absolute;left:0;color:var(--text-faint);}
+
+  .mt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .mt-table{border-collapse:collapse;width:100%;min-width:760px;font-size:12px;}
+  .mt-table th,.mt-table td{padding:8px 10px;text-align:center;border:1px solid var(--line);white-space:nowrap;}
+  .mt-table th{background:var(--panel-2);font-weight:600;font-size:11px;color:var(--text-dim);position:sticky;top:0;}
+  .mt-table td:first-child,.mt-table th:first-child{text-align:left;position:sticky;left:0;background:var(--panel);z-index:1;font-weight:600;white-space:normal;min-width:130px;}
+  .mt-table tr.mt-section td{background:var(--panel-2);color:var(--text-faint);font-size:10px;text-transform:uppercase;letter-spacing:.08em;text-align:left;font-weight:700;}
+  body[data-lang="zh"] .mt-table tr.mt-section td{text-transform:none;}
+  .mt-table td.mt-peak{color:var(--ch-red);font-weight:700;}
+  .mt-table td.mt-fade{color:var(--text-faint);}
+  .mt-table td.mt-off{color:var(--text-faint);font-style:italic;}
+  .mt-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:var(--text-dim);}
+  .mt-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .mt-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+
+  footer{margin-top:10px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--text-faint);line-height:1.6;}
+  footer strong{color:var(--text-dim);}
+
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <p class="eyebrow" data-i18n="eyebrow">Flower-cycle reference · Weeks 1–9</p>
+      <h1 data-i18n="title">Flower Cycle Lighting Dashboard</h1>
+      <p class="sub"><span id="fxName" class="mono">Redline SpecTune 760W ST</span> · <span data-i18n="subtitle">x5 controller · 12h photoperiod</span></p>
+    </div>
+    <div class="header-controls">
+      <div class="fx-toggle" id="fxToggle">
+        <button data-fx="760" class="active">760W ST</button>
+        <button data-fx="1000">1000W ST</button>
+        <button data-fx="1200">1200W ST XL</button>
+      </div>
+      <button class="lang-btn" id="langBtn" type="button">中文</button>
+      <button class="theme-btn" id="themeBtn" aria-label="Switch to dark theme" type="button">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="fx-warn" id="fxWarn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
+    <span data-i18n="fxWarnText">Confirmed for this fixture: channel wattages (per the Flexstar datasheet) and Spectrum range/schedule (40–50% Red, same 3-phase recommendation as the 760W ST, per the rep). Still unconfirmed: PPFD, UV %, and Far-Red % below are carried over from the 760W ST as a starting scaffold, not yet verified for this specific wattage. Confirm those with Flexstar and a PAR meter before this goes into a real SOP.</span>
+  </div>
+
+  <div class="rail" id="rail"></div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2 data-i18n="spectrumHeading">Spectrum — selected week</h2>
+      <svg id="spd" viewBox="0 0 800 220">
+        <defs>
+          <linearGradient id="spdGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#7B2FBF"/>
+            <stop offset="12.5%" stop-color="#3B5FE0"/>
+            <stop offset="25%" stop-color="#29B6D8"/>
+            <stop offset="37.5%" stop-color="#4CC93F"/>
+            <stop offset="50%" stop-color="#E8D22A"/>
+            <stop offset="62.5%" stop-color="#E8791F"/>
+            <stop offset="70%" stop-color="#D6304A"/>
+            <stop offset="87.5%" stop-color="#7A3340"/>
+            <stop offset="100%" stop-color="#2A1418"/>
+          </linearGradient>
+        </defs>
+        <line x1="30" y1="180" x2="770" y2="180" stroke="var(--line)" stroke-width="1"/>
+        <path id="spdPath" fill="url(#spdGrad)" fill-opacity="0.88" stroke="none"></path>
+        <g id="spdAxis" font-family="IBM Plex Mono" font-size="10" fill="var(--text-faint)" text-anchor="middle"></g>
+      </svg>
+
+      <div class="spec-readout" id="specReadout">— % Red</div>
+      <div class="spec-caption" data-i18n="specCaption">Spectrum is a single slider on the x5 controller — not independent White/Deep Red dials. Range confirmed 40–50% Red across the 760W ST, 1000W ST, and 1200W ST XL alike, per the rep. The 40/45/50 step-per-phase below is the rep's own recommendation (weeks 1–3 low, 4–6 mid, 7–9 high) — not an interpolation. She also noted a simpler flat-50% option works for the whole cycle, since that's the fixed-spectrum Redline line's factory setting.</div>
+      <div class="spec-track">
+        <div class="spec-zone" data-z="veg" data-i18n="zoneVeg" style="width:36%;">Veg range</div>
+        <div class="spec-zone" data-z="early" data-i18n="zoneEarly" style="width:38%;">Early flower</div>
+        <div class="spec-zone" data-z="late" data-i18n="zoneLate" style="width:26%;">Late flower</div>
+        <div class="spec-marker" id="specMarker"></div>
+      </div>
+      <div class="spec-track-labels"><span>40%</span><span>45%</span><span>50%</span></div>
+
+      <div class="chan-share">
+        <div class="chan-share-label" data-i18n="chanShareLabel">Channel power share (watt-weighted, Main 645W / FR 75W / UV 40W)</div>
+        <div class="strip" id="strip"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+
+      <div class="lo-picker">
+        <span class="lo-label mono" data-i18n="loLabel">Lights-on:</span>
+        <div class="lo-presets" id="loPresets">
+          <button data-lo="60">1:00AM</button>
+          <button data-lo="780">1:00PM</button>
+          <button data-lo="30">12:30AM</button>
+          <button data-lo="750">12:30PM</button>
+        </div>
+        <input type="time" id="loCustom" class="lo-custom" value="01:00">
+      </div>
+
+      <div class="timeline">
+        <div class="tl-row"><div class="tl-label mono" data-i18n="tlLight">Light</div><div class="tl-track" id="tlLight"></div></div>
+        <div class="tl-row"><div class="tl-label mono" data-i18n="tlFR">Far-Red</div><div class="tl-track" id="tlFR"></div></div>
+        <div class="tl-row"><div class="tl-label mono" data-i18n="tlUV">UV</div><div class="tl-track" id="tlUV"></div></div>
+        <div class="tl-marks" id="tlMarks"></div>
+        <div class="spec-caption" data-i18n="tlCaption" style="margin-top:12px;">UV and Far-Red schedules are built as separate, addable entries on the x5 controller (tap + per session, each with its own start time, end time, and intensity) — the readouts panel lists each week's entries in that exact format to enter directly. Light intensity also has a 25% floor on this controller (not 0%).</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2><span data-i18n="readoutsHeading">Readouts — week</span> <span id="wkNum" class="mono">1</span> <span id="wkDays1" class="mono" style="color:var(--text-faint);font-size:12px;font-weight:400;"></span></h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="lbl" data-i18n="lblPPFD">PPFD target</div><div class="val" id="statPPFD">—</div><div class="note">µmol/m²/s</div></div>
+        <div class="stat"><div class="lbl" data-i18n="lblLight">Light</div><div class="val" id="statMain">—</div><div class="note" data-i18n="noteRamp">5-min sunrise/sunset ramp</div></div>
+        <div class="stat"><div class="lbl" data-i18n="lblSpectrum">Spectrum</div><div class="val" id="statSpec">—</div><div class="note" data-i18n="noteHwRange">range 40–50% (all wattages)</div></div>
+        <div class="stat"><div class="lbl" data-i18n="lblFR">Far-Red</div><div class="val" id="statFR">—</div><div class="note" id="statFRNote"></div></div>
+        <div class="stat"><div class="lbl" data-i18n="lblUV">UV</div><div class="val" id="statUV">—</div><div class="note" id="statUVNote"></div></div>
+        <div class="stat wide"><div class="lbl" data-i18n="lblPhase">Phase goal</div><div class="val" id="statPhase" style="font-size:15px;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2><span data-i18n="envHeading">Environment — week</span> <span id="wkNum2" class="mono">1</span> <span id="wkDays2" class="mono" style="color:var(--text-faint);font-size:12px;font-weight:400;"></span></h2>
+    <div class="env-grid" id="envGrid"></div>
+    <div class="spec-caption" data-i18n="envCaption" style="margin-top:12px;margin-bottom:0;">Auto Dim / Auto Shutdown are suggested trigger points (a margin above this week's own lights-on target), not rep- or manual-specified values — the x5 ships with a flat 90°F/95°F default per the manual's example. Confirm against your canopy before relying on them.</div>
+  </div>
+
+  <div class="panel">
+    <h2 data-i18n="arcHeading">9-week arc</h2>
+    <svg id="chart" viewBox="0 0 900 160" style="width:100%;height:auto;overflow:visible;"></svg>
+    <div class="arc-strips" id="arcStrips"></div>
+    <div class="arc-nums" id="arcNums"></div>
+  </div>
+
+  <div class="panel">
+    <h2 data-i18n="rulesHeading">Key operating rules</h2>
+    <div class="rules-grid">
+      <div class="rule-group">
+        <div class="rule-cat" style="color:var(--ch-uv)" data-i18n="catUV">UV</div>
+        <ul>
+          <li data-i18n="uvRule1">Split into two daily sessions (~1.5h morning + ~1.5h afternoon) rather than one continuous block.</li>
+          <li data-i18n="uvRule2">Mid-cycle only — never the first hour after lights-on or the last hour before lights-off.</li>
+          <li data-i18n="uvRule3">Keep ambient temp under 84°F (29°C) whenever UV is active.</li>
+          <li data-i18n="uvRule4">Pause 3–5 days after any defoliation pass, resume once recovered.</li>
+          <li data-i18n="uvRule5">Stop entirely 5 days before harvest.</li>
+        </ul>
+      </div>
+      <div class="rule-group">
+        <div class="rule-cat" style="color:var(--ch-farred)" data-i18n="catFR">Far-Red</div>
+        <ul>
+          <li data-i18n="frRule1">Running with the main spectrum triggers the Emerson effect — meaningfully boosts photosynthetic efficiency.</li>
+          <li data-i18n="frRule2">Cut starting week 7 — buds are bulking and no longer need the stretch signal.</li>
+          <li data-i18n="frRule3">Worth testing on your own genetics: some cultivars hold density fine with a low dose kept through weeks 7–8.</li>
+        </ul>
+      </div>
+      <div class="rule-group">
+        <div class="rule-cat" style="color:var(--ch-red)" data-i18n="catCO2">CO2 &amp; EC</div>
+        <ul>
+          <li data-i18n="co2Rule1">CO2 only useful while lights are on — shut off in sync with lights-off.</li>
+          <li data-i18n="co2Rule2">High PPFD without matching CO2 just wastes electricity — raise both together.</li>
+          <li data-i18n="co2Rule3">Check runoff EC weekly; flush immediately above 3.5 mS/cm.</li>
+        </ul>
+      </div>
+      <div class="rule-group">
+        <div class="rule-cat" style="color:var(--text-dim)" data-i18n="catHarvest">Harvest</div>
+        <ul>
+          <li data-i18n="harvestRule1">Target 70–80% cloudy trichomes with 10–20% amber for peak quality.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 data-i18n="mtHeading">9-Week Reference Table</h2>
+    <div class="mt-wrap">
+      <table class="mt-table" id="mtTable"></table>
+    </div>
+    <div class="mt-legend">
+      <span><span class="dot" style="background:var(--ch-red);"></span><span data-i18n="mtLegendPeak">Bold accent = peak value for that row</span></span>
+      <span><span class="dot" style="background:var(--text-faint);"></span><span data-i18n="mtLegendFade">Dimmed = ripening/finish weeks</span></span>
+      <span><span class="dot" style="background:var(--text-faint);border:1px solid var(--text-faint);"></span><span data-i18n="mtLegendOff">Italic = channel off that week</span></span>
+    </div>
+  </div>
+
+  <footer>
+    <strong data-i18n="footerSource">Source:</strong> <span data-i18n="footerSourceText">Flexstar rep-provided protocol, cross-verified against the source HTML file, two revisions of the Redline SpecTune x5 controller manual, and the Redline datasheet. Confirmed control ranges: Light 25–100%, Spectrum 40–50% Red (confirmed across 760W ST, 1000W ST, and 1200W ST XL), UV 25–100%, Far-Red 25–100% (not yet confirmed per-wattage — worth checking).</span>
+    <span data-i18n="footerWatt">Spectrum-mix bars are watt-weighted using the 760W ST's real channel ceilings (Main 645W / Far-Red 75W / UV 40W), not raw dial % — Far-Red and UV stay a thin slice even at full dial.</span>
+    <span data-i18n="footerSchedule">Schedule examples use an illustrative 1:00AM lights-on / 1:00PM lights-off anchor; shift to match your actual timer.</span>
+  </footer>
+
+</div>
+
+<script>
+const I18N = {
+  en:{
+    eyebrow:"Flower-cycle reference · Weeks 1–9", title:"Flower Cycle Lighting Dashboard",
+    subtitle:"Redline SpecTune 760W ST · x5 controller · 12h photoperiod",
+    spectrumHeading:"Spectrum — selected week",
+    specCaption:"Spectrum is a single slider on the x5 controller — not independent White/Deep Red dials. Range confirmed 40–50% Red across the 760W ST, 1000W ST, and 1200W ST XL alike, per the rep. The 40/45/50 step-per-phase below is the rep's own recommendation (weeks 1–3 low, 4–6 mid, 7–9 high) — not an interpolation. She also noted a simpler flat-50% option works for the whole cycle, since that's the fixed-spectrum Redline line's factory setting.",
+    zoneVeg:"Veg range", zoneEarly:"Early flower", zoneLate:"Late flower",
+    chanShareLabel:"Channel power share (watt-weighted, Main 645W / FR 75W / UV 40W)",
+    legendMain:"Main (blended via Spectrum slider)", legendFR:"Far-Red", legendUV:"UV",
+    tlLight:"Light", tlFR:"Far-Red", tlUV:"UV",
+    tlCaption:"UV and Far-Red schedules are built as separate, addable entries on the x5 controller (tap + per session, each with its own start time, end time, and intensity) — the readouts panel lists each week's entries in that exact format to enter directly. Light intensity also has a 25% floor on this controller (not 0%).",
+    loLabel:"Lights-on:",
+    readoutsHeading:"Readouts — week",
+    lblPPFD:"PPFD target", lblLight:"Light", noteRamp:"5-min sunrise/sunset ramp",
+    lblSpectrum:"Spectrum", noteHwRange:"range 40–50% (all wattages)",
+    lblFR:"Far-Red", lblUV:"UV", lblPhase:"Phase goal",
+    envHeading:"Environment — week",
+    envCaption:"Auto Dim / Auto Shutdown are suggested trigger points (a margin above this week's own lights-on target), not rep- or manual-specified values — the x5 ships with a flat 90°F/95°F default per the manual's example. Confirm against your canopy before relying on them.",
+    envCO2:"CO₂", envEC:"EC", envTOn:"Temp On", envTOff:"Temp Off", envRH:"RH", envVPD:"VPD",
+    envFans:"Fans", envExhaust:"Exhaust", envAutoDim:"Auto Dim", envAutoShut:"Auto Shutdown",
+    arcHeading:"9-week arc", rulesHeading:"Key operating rules",
+    catUV:"UV", catFR:"Far-Red", catCO2:"CO2 & EC", catHarvest:"Harvest",
+    uvRule1:"Split into two daily sessions (~1.5h morning + ~1.5h afternoon) rather than one continuous block.",
+    uvRule2:"Mid-cycle only — never the first hour after lights-on or the last hour before lights-off.",
+    uvRule3:"Keep ambient temp under 84°F (29°C) whenever UV is active.",
+    uvRule4:"Pause 3–5 days after any defoliation pass, resume once recovered.",
+    uvRule5:"Stop entirely 5 days before harvest.",
+    frRule1:"Running with the main spectrum triggers the Emerson effect — meaningfully boosts photosynthetic efficiency.",
+    frRule2:"Cut starting week 7 by default — by then Far-Red\u2019s role in driving the shift into flowering is largely done, and continuing it can loosen bud structure right when density and weight matter most.",
+    frRule3:"Worth testing on your own genetics: the rep noted some cultivars hold density fine with a low dose (20\u201325%, 5 min after lights-off) kept through weeks 7\u20138 \u2014 she\u2019s specifically interested in what you observe.",
+    co2Rule1:"CO2 only useful while lights are on — shut off in sync with lights-off.",
+    co2Rule2:"High PPFD without matching CO2 just wastes electricity — raise both together.",
+    co2Rule3:"Check runoff EC weekly; flush immediately above 3.5 mS/cm.",
+    harvestRule1:"Target 70–80% cloudy trichomes with 10–20% amber for peak quality.",
+    mtHeading:"9-Week Reference Table",
+    mtLegendPeak:"Bold accent = peak value for that row", mtLegendFade:"Dimmed = ripening/finish weeks", mtLegendOff:"Italic = channel off that week",
+    secLight:"Light Channels", secEnv:"Environment", secAirflow:"Airflow", secSafety:"Safety Thresholds", secPhase:"Phase Goal",
+    mtMain:"Main Light %", mtPPFD:"PPFD (µmol/m²/s)", mtSpec:"Spectrum (% Red)", mtFR:"Far-Red %", mtUV:"UV %",
+    mtCO2:"CO2 (ppm)", mtEC:"EC (mS/cm)", mtTOn:"Temp, Lights-On", mtTOff:"Temp, Lights-Off", mtRH:"RH", mtVPD:"VPD (kPa)",
+    mtFans:"Fans", mtExhaust:"Exhaust", mtAutoDim:"Auto Dim", mtAutoShut:"Auto Shutdown", mtPhase:"Phase Goal",
+    footerSource:"Source:",
+    footerSourceText:"Flexstar rep-provided protocol, cross-verified against the source HTML file, two revisions of the Redline SpecTune x5 controller manual, and the Redline datasheet. Confirmed control ranges: Light 25–100%, Spectrum 40–50% Red (confirmed across 760W ST, 1000W ST, and 1200W ST XL), UV 25–100%, Far-Red 25–100% (not yet confirmed per-wattage — worth checking).",
+    footerWatt:"Spectrum-mix bars are watt-weighted using the 760W ST's real channel ceilings (Main 645W / Far-Red 75W / UV 40W), not raw dial % — Far-Red and UV stay a thin slice even at full dial.",
+    footerSchedule:"All clock times recalculate live from the Lights-on setting above the timeline — pick your room's actual schedule and every Entry time on the page updates to match.",
+    ariaToLight:"Switch to light theme", ariaToDark:"Switch to dark theme",
+    fxWarnText:"Confirmed for this fixture: channel wattages (per the Flexstar datasheet) and Spectrum range/schedule (40–50% Red, same 3-phase recommendation as the 760W ST, per the rep). Still unconfirmed: PPFD, UV %, and Far-Red % below are carried over from the 760W ST as a starting scaffold, not yet verified for this specific wattage. Confirm those with Flexstar and a PAR meter before this goes into a real SOP.",
+    offWord:"Off", weekArc:"W",
+  },
+  zh:{
+    eyebrow:"花期参考 · 第1–9周", title:"花期灯光控制面板",
+    subtitle:"Redline SpecTune 760W ST · x5控制器 · 12小时光照周期",
+    spectrumHeading:"光谱 — 当前周",
+    specCaption:"光谱在x5控制器上是单一滑块 — 并非独立的白光/深红光旋钮。760W ST、1000W ST、1200W ST XL的光谱范围经代表确认均为40–50%红光。下方按阶段设定的40/45/50为代表本人给出的建议（第1–3周偏低、第4–6周居中、第7–9周偏高），并非本文自行推算。她也提到整个花期统一维持50%（即固定光谱Redline产线的出厂设定）同样可行。",
+    zoneVeg:"营养期范围", zoneEarly:"早花期", zoneLate:"晚花期",
+    chanShareLabel:"各通道功率占比（按瓦数加权：主光645W / 远红外75W / 紫外线40W）",
+    legendMain:"主光（通过光谱滑块混合白光与深红光）", legendFR:"远红外", legendUV:"紫外线",
+    tlLight:"主光", tlFR:"远红外", tlUV:"紫外线",
+    tlCaption:"紫外线和远红外的排程在x5控制器上是各自独立、可添加的时段（点击+添加，每个时段可单独设置开始时间、结束时间和强度）— 下方读数栏按此格式列出了每周具体时段，可直接照此设置。此控制器上主光强度下限也是25%（并非0%）。",
+    loLabel:"开灯时间：",
+    readoutsHeading:"读数 — 第",
+    lblPPFD:"PPFD目标", lblLight:"主光", noteRamp:"5分钟日出/日落渐变",
+    lblSpectrum:"光谱", noteHwRange:"范围40–50%（各瓦数通用）",
+    lblFR:"远红外", lblUV:"紫外线", lblPhase:"阶段目标",
+    envHeading:"环境参数 — 第",
+    envCaption:"自动调光/自动关闭为建议触发点（在当周开灯目标温度基础上留出余量），并非代表或说明书指定的数值 — 据说明书示例，x5出厂默认为固定90°F/95°F。使用前请结合实际冠层情况确认。",
+    envCO2:"CO₂", envEC:"EC", envTOn:"开灯温度", envTOff:"关灯温度", envRH:"湿度", envVPD:"VPD",
+    envFans:"风扇", envExhaust:"排风", envAutoDim:"自动调光", envAutoShut:"自动关闭",
+    arcHeading:"9周变化曲线", rulesHeading:"关键操作规则",
+    catUV:"紫外线", catFR:"远红外", catCO2:"CO2与EC", catHarvest:"收割",
+    uvRule1:"分两段开启（早上约1.5小时 + 下午约1.5小时），效果优于连续照射。",
+    uvRule2:"仅在光照周期中段开启 — 开灯后第一小时和关灯前最后一小时都不开启。",
+    uvRule3:"紫外线运行期间保持环境温度在84°F（29°C）以下。",
+    uvRule4:"摘叶后暂停3–5天，待植株恢复后再重新开启。",
+    uvRule5:"收割前5天完全停止。",
+    frRule1:"远红外与主光同时开启即触发Emerson效应 — 能显著提升光合作用效率。",
+    frRule2:"默认从第7周起关闭 — 此时远红外在推动进入花期这一转变过程中的作用已基本完成，此时继续开启反而可能使花苞结构变松散，而这恰恰是密度和重量最关键的阶段。",
+    frRule3:"值得在自家品种上测试：代表提到部分品种在第7–8周保持低强度远红外（20–25%，关灯后5分钟）密度依然良好 — 她特别希望了解你们实际测试后的观察结果。",
+    co2Rule1:"CO2仅在开灯时才有效果 — 应与关灯同步关闭，避免浪费。",
+    co2Rule2:"PPFD过高而CO2不足等同于浪费电力 — 应同步提升两者。",
+    co2Rule3:"每周检测排液EC，超过3.5 mS/cm应立即冲洗。",
+    harvestRule1:"以70–80%云雾状 + 10–20%琥珀色trichome为目标，品质最佳。",
+    mtHeading:"9周总览参考表",
+    mtLegendPeak:"加粗强调色 = 该行的峰值", mtLegendFade:"淡化 = 熟化/收尾周", mtLegendOff:"斜体 = 该周该通道关闭",
+    secLight:"光照通道", secEnv:"环境参数", secAirflow:"通风管理", secSafety:"安全阈值", secPhase:"阶段目标",
+    mtMain:"主光强度 %", mtPPFD:"PPFD（μmol/m²/s）", mtSpec:"光谱（% 红光）", mtFR:"远红外 %", mtUV:"紫外线 %",
+    mtCO2:"CO2（ppm）", mtEC:"EC（mS/cm）", mtTOn:"开灯温度", mtTOff:"关灯温度", mtRH:"湿度 RH", mtVPD:"VPD（kPa）",
+    mtFans:"循环风扇", mtExhaust:"排风/进风", mtAutoDim:"自动调光", mtAutoShut:"自动关闭", mtPhase:"阶段目标",
+    footerSource:"来源：",
+    footerSourceText:"Flexstar代表提供的方案，已与源HTML文件、两版Redline SpecTune x5控制器说明书及Redline数据表交叉核实。已确认的控制范围：主光25–100%，光谱40–50%红光（760W ST、1000W ST、1200W ST XL均已确认），紫外线25–100%，远红外25–100%（尚未按瓦数分别确认 — 建议一并核实）。",
+    footerWatt:"光谱占比条形图按760W ST真实通道功率上限加权计算（主光645W / 远红外75W / 紫外线40W），而非直接使用旋钮百分比 — 即使旋钮开到100%，远红外和紫外线占比依然很小。",
+    footerSchedule:"页面上所有具体时钟时间均根据时间轴上方的开灯时间设置实时计算 — 选择贵设施实际的排程，页面上每个时段的时间会自动同步更新。",
+    ariaToLight:"切换为浅色主题", ariaToDark:"切换为深色主题",
+    fxWarnText:"该型号已确认：通道功率（依据Flexstar说明书）与光谱范围/排程（40–50%红光，与760W ST相同的三阶段建议，据代表确认）。仍未确认：以下的PPFD、UV%、远红外%数值仍沿用760W ST的数值作为初始参考框架，尚未针对该具体瓦数验证。请在将其用于正式SOP前，与Flexstar及实测PAR值共同确认。",
+    offWord:"关闭", weekArc:"第",
+  }
+};
+
+const WATTS760 = { main: 645, fr: 75, uv: 40 };
+const WATTS1000 = { main: 840, fr: 105, uv: 55 };
+const WATTS1200 = { main: 1000, fr: 140, uv: 60 };
+
+const weeks = [
+  { n:1, railLabel:"Flip", railLabel_zh:"翻转", phase:"Trigger flowering", phase_zh:"触发开花",
+    p760:{ mainDisp:"70–80%", mainMid:75, ppfd:1005, ppfdDisp:"~1,005",
+      specRedPct:40,
+      frDisp:"25–30%", frMid:27.5, frNote:"EOD pulse only", frNote_zh:"仅关灯脉冲",
+      frSeg:[12,12.167], uvDisp:"Off", uvMid:0, uvNote:"", uvNote_zh:"", uvSeg:null,
+      env:{co2:"900–1,000 ppm",ec:"1.8–2.2 mS/cm",tOn:"77–81°F",tOff:"68–72°F",rh:"55–60%",vpd:"0.9–1.1 kPa",fans:"Low–Medium",exhaust:"Standard",autoDim:"86°F",autoShut:"91°F"} } },
+
+  { n:2, railLabel:"Flip", railLabel_zh:"翻转", phase:"Trigger flowering", phase_zh:"触发开花",
+    p760:{ mainDisp:"70–80%", mainMid:75, ppfd:1005, ppfdDisp:"~1,005",
+      specRedPct:40,
+      frDisp:"25–30%", frMid:27.5, frNote:"EOD pulse only", frNote_zh:"仅关灯脉冲",
+      frSeg:[12,12.167], uvDisp:"Off", uvMid:0, uvNote:"", uvNote_zh:"", uvSeg:null,
+      env:{co2:"900–1,000 ppm",ec:"1.8–2.2 mS/cm",tOn:"77–81°F",tOff:"68–72°F",rh:"55–60%",vpd:"0.9–1.1 kPa",fans:"Low–Medium",exhaust:"Standard",autoDim:"86°F",autoShut:"91°F"} } },
+
+  { n:3, railLabel:"Bud sites", railLabel_zh:"结蕾", phase:"Max bud sites", phase_zh:"最大化花点",
+    p760:{ mainDisp:"100%", mainMid:100, ppfd:1435, ppfdDisp:"~1,435",
+      specRedPct:40,
+      frDisp:"40–50%", frMid:45, frNote:"blended, full cycle", frNote_zh:"与主光同开，全程",
+      frSeg:[0,12], uvDisp:"Off", uvMid:0, uvNote:"off through end of week", uvNote_zh:"至第3周末前关闭", uvSeg:null,
+      env:{co2:"1,200–1,500 ppm",ec:"2.5–3.0 mS/cm",tOn:"77–81°F",tOff:"68–72°F",rh:"45–50%",vpd:"1.1–1.3 kPa",fans:"Medium–High",exhaust:"+10%",autoDim:"86°F",autoShut:"91°F"} } },
+
+  { n:4, railLabel:"Resin ↑", railLabel_zh:"树脂↑", phase:"Resin boost / build UV tolerance", phase_zh:"提升树脂／建立UV耐受",
+    p760:{ mainDisp:"100%", mainMid:100, ppfd:1435, ppfdDisp:"~1,435",
+      specRedPct:45,
+      frDisp:"40–50%", frMid:45, frNote:"blended, full cycle", frNote_zh:"与主光同开，全程",
+      frSeg:[0,12], uvDisp:"25–30%", uvMid:27.5,
+      uvNote:"rep doc said 20–30%; 25% is the x5 floor", uvNote_zh:"代表文件原写20–30%；25%为x5下限",
+      uvSeg:[5,6],
+      env:{co2:"1,200–1,500 ppm",ec:"2.5–3.0 mS/cm",tOn:"77–81°F",tOff:"68–72°F",rh:"45–50%",vpd:"1.1–1.3 kPa",fans:"Medium–High",exhaust:"+10%",autoDim:"86°F",autoShut:"91°F"} } },
+
+  { n:5, railLabel:"Resin ↑", railLabel_zh:"树脂↑", phase:"Resin boost / build UV tolerance", phase_zh:"提升树脂／建立UV耐受",
+    p760:{ mainDisp:"100%", mainMid:100, ppfd:1435, ppfdDisp:"~1,435",
+      specRedPct:45,
+      frDisp:"40–50%", frMid:45, frNote:"blended, full cycle", frNote_zh:"与主光同开，全程",
+      frSeg:[0,12], uvDisp:"25–30%", uvMid:27.5,
+      uvNote:"rep doc said 20–30%; 25% is the x5 floor", uvNote_zh:"代表文件原写20–30%；25%为x5下限",
+      uvSeg:[5,6],
+      env:{co2:"1,200–1,500 ppm",ec:"2.5–3.0 mS/cm",tOn:"77–81°F",tOff:"68–72°F",rh:"45–50%",vpd:"1.1–1.3 kPa",fans:"Medium–High",exhaust:"+10%",autoDim:"86°F",autoShut:"91°F"} } },
+
+  { n:6, railLabel:"Trichome ↑", railLabel_zh:"毛状体↑", phase:"Peak bud density & weight", phase_zh:"峰值花苞密度与重量",
+    p760:{ mainDisp:"100%", mainMid:100, ppfd:1435, ppfdDisp:"~1,435",
+      specRedPct:45,
+      frDisp:"40–50%", frMid:45, frNote:"last week before cutoff", frNote_zh:"关闭前最后一周",
+      frSeg:[0,12], uvDisp:"60–80%", uvMid:70,
+      uvNote:"", uvNote_zh:"",
+      uvSeg:[[3,4.5],[7.5,9]],
+      env:{co2:"1,000–1,200 ppm",ec:"2.8–3.2 mS/cm",tOn:"73–77°F",tOff:"64–68°F",rh:"40–45%",vpd:"1.2–1.5 kPa",fans:"High",exhaust:"+20%",autoDim:"82°F",autoShut:"87°F"} } },
+
+  { n:7, railLabel:"Peak", railLabel_zh:"峰值", phase:"Peak bud density & weight", phase_zh:"峰值花苞密度与重量",
+    p760:{ mainDisp:"100%", mainMid:100, ppfd:1435, ppfdDisp:"~1,435",
+      specRedPct:50,
+      frDisp:"Off", frMid:0, frNote:"cutoff per operating rules", frNote_zh:"依操作规则关闭",
+      frSeg:null, uvDisp:"60–80%", uvMid:70,
+      uvNote:"", uvNote_zh:"",
+      uvSeg:[[3,4.5],[7.5,9]],
+      env:{co2:"1,000–1,200 ppm",ec:"2.8–3.2 mS/cm",tOn:"73–77°F",tOff:"64–68°F",rh:"40–45%",vpd:"1.2–1.5 kPa",fans:"High",exhaust:"+20%",autoDim:"82°F",autoShut:"87°F"} } },
+
+  { n:8, railLabel:"Ripen", railLabel_zh:"熟化", phase:"Maturity & flavor", phase_zh:"成熟度与风味",
+    p760:{ mainDisp:"80%", mainMid:80, ppfd:1148, ppfdDisp:"~1,148",
+      specRedPct:50,
+      frDisp:"Off", frMid:0, frNote:"", frNote_zh:"",
+      frSeg:null, uvDisp:"30–40%", uvMid:35,
+      uvNote:"", uvNote_zh:"",
+      uvSeg:[5,6],
+      env:{co2:"Ambient ~400 ppm",ec:"0.5–1.0 mS/cm (flush)",tOn:"68–72°F",tOff:"61–64°F",rh:"40–45%",vpd:"1.2–1.4 kPa",fans:"Medium",exhaust:"Standard",autoDim:"77°F",autoShut:"82°F"} } },
+
+  { n:9, railLabel:"Finish", railLabel_zh:"收尾", phase:"Clean finish", phase_zh:"干净收尾",
+    p760:{ mainDisp:"80%", mainMid:80, ppfd:1148, ppfdDisp:"~1,148",
+      specRedPct:50,
+      frDisp:"Off", frMid:0, frNote:"", frNote_zh:"",
+      frSeg:null, uvDisp:"30–40%", uvMid:35,
+      uvNote:"stop entirely 5 days pre-harvest", uvNote_zh:"收割前5天完全停止",
+      uvSeg:[5,6],
+      env:{co2:"Ambient ~400 ppm",ec:"0.5–1.0 mS/cm (flush)",tOn:"68–72°F",tOff:"61–64°F",rh:"40–45%",vpd:"1.2–1.4 kPa",fans:"Medium",exhaust:"Standard",autoDim:"77°F",autoShut:"82°F"} } },
+];
+
+weeks.forEach(w=>{ w.p1000 = JSON.parse(JSON.stringify(w.p760)); w.p1200 = JSON.parse(JSON.stringify(w.p760)); });
+
+let FIXTURE = '760';
+function fx(w){ return FIXTURE==='1200' ? w.p1200 : FIXTURE==='1000' ? w.p1000 : w.p760; }
+
+const FANS_ZH = {"Low–Medium":"低–中","Medium–High":"中–高","High":"高","Medium":"中"};
+
+const MASTER_ROWS = [
+  {section:'secLight'},
+  {key:'mtMain', get:(w,d)=>d.mainDisp, cls:(w)=> (w.n>=3&&w.n<=7)?'mt-peak':(w.n>=8?'mt-fade':'')},
+  {key:'mtPPFD', get:(w,d)=>d.ppfdDisp, cls:(w)=> (w.n>=3&&w.n<=7)?'mt-peak':(w.n>=8?'mt-fade':'')},
+  {key:'mtSpec', get:(w,d)=> LANG==='zh'?`${d.specRedPct}%红光`:`${d.specRedPct}% Red`, cls:()=>''},
+  {key:'mtFR', get:(w,d)=> d.frSeg?d.frDisp:t('offWord'), cls:(w,d)=> !d.frSeg?'mt-off':''},
+  {key:'mtUV', get:(w,d)=> d.uvSeg?d.uvDisp:t('offWord'), cls:(w,d)=> !d.uvSeg?'mt-off':((w.n===6||w.n===7)?'mt-peak':'')},
+  {section:'secEnv'},
+  {key:'mtCO2', get:(w,d)=> trCO2(d.env.co2), cls:(w)=>(w.n>=3&&w.n<=5)?'mt-peak':(w.n>=8?'mt-fade':'')},
+  {key:'mtEC', get:(w,d)=> trEC(d.env.ec), cls:(w)=>(w.n===6||w.n===7)?'mt-peak':(w.n>=8?'mt-fade':'')},
+  {key:'mtTOn', get:(w,d)=> d.env.tOn, cls:(w)=>(w.n>=8?'mt-fade':'')},
+  {key:'mtTOff', get:(w,d)=> d.env.tOff, cls:(w)=>(w.n>=8?'mt-fade':'')},
+  {key:'mtRH', get:(w,d)=> d.env.rh, cls:(w)=>(w.n<=2)?'mt-peak':(w.n>=8?'mt-fade':'')},
+  {key:'mtVPD', get:(w,d)=> d.env.vpd, cls:(w)=>(w.n===6||w.n===7)?'mt-peak':''},
+  {section:'secAirflow'},
+  {key:'mtFans', get:(w,d)=> trFans(d.env.fans), cls:(w)=>(w.n===6||w.n===7)?'mt-peak':(w.n>=8?'mt-fade':'')},
+  {key:'mtExhaust', get:(w,d)=> trExhaust(d.env.exhaust), cls:(w)=>(w.n===6||w.n===7)?'mt-peak':''},
+  {section:'secSafety'},
+  {key:'mtAutoDim', get:(w,d)=> d.env.autoDim, cls:(w)=>(w.n>=8?'mt-fade':'')},
+  {key:'mtAutoShut', get:(w,d)=> d.env.autoShut, cls:(w)=>(w.n>=8?'mt-fade':'')},
+  {section:'secPhase'},
+  {key:'mtPhase', get:(w,d)=> LANG==='zh'?w.phase_zh:w.phase, cls:(w)=>(w.n>=8?'mt-fade':'')},
+];
+
+let currentWeek = 1;
+let LANG = 'en';
+const SPAN = 13;
+
+let LIGHTS_ON_MIN = 60; // minutes since midnight; default 1:00 AM
+
+function fmtClock(hourOffset){
+  let totalMin = LIGHTS_ON_MIN + hourOffset*60;
+  totalMin = ((Math.round(totalMin) % 1440) + 1440) % 1440;
+  let h24 = Math.floor(totalMin/60), m = totalMin%60;
+  let ampm = h24<12 ? 'AM':'PM';
+  let h12 = h24%12; if(h12===0) h12=12;
+  return `${h12}:${m.toString().padStart(2,'0')}${ampm}`;
+}
+
+function formatEntries(seg, disp){
+  if(!seg) return LANG==='zh' ? '未设置' : 'Not scheduled';
+  const pairs = Array.isArray(seg[0]) ? seg : [seg];
+  const entryWord = LANG==='zh' ? '时段' : 'Entry';
+  const atWord = LANG==='zh' ? '，强度' : ' @ ';
+  const join = LANG==='zh' ? ' \u30fb ' : ' \u00b7 ';
+  return pairs.map(([s,e],i)=> `${entryWord}${i+1}: ${fmtClock(s)}\u2013${fmtClock(e)}${atWord}${disp}`).join(join);
+}
+const XMIN=380, XMAX=780, PXMIN=30, PXMAX=770, BASE_Y=180, TOP_Y=20;
+
+function t(key){ return I18N[LANG][key]; }
+function dayRange(n){
+  const start=(n-1)*7+1, end=n*7;
+  return LANG==='zh' ? `第${start}–${end}天` : `Days ${start}–${end}`;
+}
+
+function segWatts(mainMid, frMid, uvMid){
+  const WATTS = FIXTURE==='1200' ? WATTS1200 : FIXTURE==='1000' ? WATTS1000 : WATTS760;
+  const mw=(mainMid/100)*WATTS.main, fw=(frMid/100)*WATTS.fr, uw=(uvMid/100)*WATTS.uv;
+  const total = mw+fw+uw || 1;
+  return { mainPct: mw/total*100, frPct: fw/total*100, uvPct: uw/total*100 };
+}
+
+function renderRail(){
+  const rail = document.getElementById('rail');
+  rail.innerHTML = '';
+  weeks.forEach(w=>{
+    const b = document.createElement('button');
+    b.className = 'tab' + (w.n===currentWeek ? ' active':'');
+    const wk = LANG==='zh' ? `${t('weekArc')}${w.n}${LANG==='zh'?'周':''}` : `WK ${w.n}`;
+    const label = LANG==='zh' ? w.railLabel_zh : w.railLabel;
+    b.innerHTML = `<div class="wk mono">${wk}</div><div class="days mono">${dayRange(w.n)}</div><div class="ph">${label}</div>`;
+    b.addEventListener('click', ()=>{ currentWeek = w.n; renderAll(); });
+    rail.appendChild(b);
+  });
+}
+
+function xPix(wl){ return PXMIN + (wl-XMIN)/(XMAX-XMIN)*(PXMAX-PXMIN); }
+function gauss(x,c,wd,h){ return h*Math.exp(-((x-c)*(x-c))/(2*wd*wd)); }
+
+function renderSPD(){
+  const d = fx(weeks[currentWeek-1]);
+  const tt = (d.specRedPct-40)/10;
+  const blueH = 60 - tt*26, redH = 36 + tt*58;
+  const frOn = d.frSeg!==null, uvOn = d.uvSeg!==null;
+  const frH = frOn ? 16 + (d.frMid/100)*28 : 3;
+  const uvH = uvOn ? 12 + (d.uvMid/100)*24 : 2;
+  let pts = [];
+  for(let wl=XMIN; wl<=XMAX; wl+=6){
+    const y = gauss(wl,398,13,uvH) + gauss(wl,452,30,blueH) + gauss(wl,520,45,9) + gauss(wl,660,26,redH) + gauss(wl,730,20,frH);
+    pts.push(`${xPix(wl).toFixed(1)} ${(BASE_Y-Math.min(y,BASE_Y-TOP_Y)).toFixed(1)}`);
+  }
+  document.getElementById('spdPath').setAttribute('d', `M ${PXMIN} ${BASE_Y} L ` + pts.join(' L ') + ` L ${PXMAX} ${BASE_Y} Z`);
+  const ticks = [380,430,480,530,580,630,680,730,780];
+  document.getElementById('spdAxis').innerHTML = ticks.map(wl=>`<text x="${xPix(wl)}" y="197">${wl}</text>`).join('');
+}
+
+function renderSpecTrack(){
+  const pct = fx(weeks[currentWeek-1]).specRedPct;
+  document.getElementById('specMarker').style.left = ((pct-40)/10*100).toFixed(1)+'%';
+  document.getElementById('specReadout').textContent = LANG==='zh' ? `${pct}% 红光` : `${pct}% Red`;
+}
+
+function renderStrip(){
+  const d = fx(weeks[currentWeek-1]);
+  const {mainPct,frPct,uvPct} = segWatts(d.mainMid,d.frMid,d.uvMid);
+  document.getElementById('strip').innerHTML = `
+    <div class="seg" style="flex-basis:${mainPct}%;background:linear-gradient(90deg,var(--ch-main),var(--ch-red));"></div>
+    <div class="seg" style="flex-basis:${frPct}%;background:var(--ch-farred);"></div>
+    <div class="seg" style="flex-basis:${uvPct}%;background:var(--ch-uv);"></div>
+  `;
+  const frDisp = d.frSeg ? d.frDisp : t('offWord');
+  const uvDisp = d.uvSeg ? d.uvDisp : t('offWord');
+  document.getElementById('legend').innerHTML = `
+    <span><span class="sw" style="background:linear-gradient(90deg,var(--ch-main),var(--ch-red));"></span>${t('legendMain')} ${d.mainDisp}</span>
+    <span><span class="sw" style="background:var(--ch-farred);"></span>${t('legendFR')} ${frDisp}</span>
+    <span><span class="sw" style="background:var(--ch-uv);"></span>${t('legendUV')} ${uvDisp}</span>
+  `;
+}
+
+function block(seg){
+  if(!seg) return '';
+  const pairs = Array.isArray(seg[0]) ? seg : [seg];
+  return pairs.map(([s,e])=>{
+    const left=(s/SPAN*100).toFixed(2), width=Math.max((e-s)/SPAN*100,0.8).toFixed(2);
+    return `<div class="tl-block" style="left:${left}%;width:${width}%;"></div>`;
+  }).join('');
+}
+
+function renderTimeline(){
+  const d = fx(weeks[currentWeek-1]);
+  document.getElementById('tlLight').innerHTML = block([0,12]);
+  document.getElementById('tlFR').innerHTML = block(d.frSeg);
+  document.getElementById('tlUV').innerHTML = block(d.uvSeg);
+  document.querySelectorAll('#tlLight .tl-block').forEach(el=>el.style.background='var(--ch-main)');
+  document.querySelectorAll('#tlFR .tl-block').forEach(el=>el.style.background='var(--ch-farred)');
+  document.querySelectorAll('#tlUV .tl-block').forEach(el=>el.style.background='var(--ch-uv)');
+  document.getElementById('tlMarks').innerHTML = [0,4,8,12,13].map(h=>`<span>${fmtClock(h)}</span>`).join('');
+}
+
+function renderStats(){
+  const w = weeks[currentWeek-1];
+  const d = fx(w);
+  document.getElementById('wkNum').textContent = LANG==='zh' ? `${w.n}周` : w.n;
+  document.getElementById('wkNum2').textContent = LANG==='zh' ? `${w.n}周` : w.n;
+  document.getElementById('wkDays1').textContent = '('+dayRange(w.n)+')';
+  document.getElementById('wkDays2').textContent = '('+dayRange(w.n)+')';
+  document.getElementById('statPhase').textContent = LANG==='zh' ? w.phase_zh : w.phase;
+  document.getElementById('statPPFD').textContent = d.ppfdDisp;
+  document.getElementById('statMain').textContent = d.mainDisp;
+  document.getElementById('statSpec').textContent = LANG==='zh' ? `${d.specRedPct}% 红光` : `${d.specRedPct}% Red`;
+  document.getElementById('statFR').textContent = d.frSeg ? d.frDisp : t('offWord');
+  const frNote = LANG==='zh' ? d.frNote_zh : d.frNote;
+  const frTimeLabel = formatEntries(d.frSeg, d.frDisp);
+  document.getElementById('statFRNote').textContent = frTimeLabel + (frNote ? ' · '+frNote : '');
+  document.getElementById('statUV').textContent = d.uvSeg ? d.uvDisp : t('offWord');
+  const uvNote = LANG==='zh' ? d.uvNote_zh : d.uvNote;
+  const uvTimeLabel = formatEntries(d.uvSeg, d.uvDisp);
+  document.getElementById('statUVNote').textContent = uvTimeLabel + (uvNote ? ' · '+uvNote : '');
+}
+
+function trCO2(v){ return LANG==='zh' && v==="Ambient ~400 ppm" ? "自然浓度 ~400 ppm" : v; }
+function trEC(v){ return LANG==='zh' ? v.replace("(flush)","（冲洗阶段）") : v; }
+function trFans(v){ return LANG==='zh' ? (FANS_ZH[v]||v) : v; }
+function trExhaust(v){ return LANG==='zh' && v==="Standard" ? "标准" : v; }
+
+function renderEnv(){
+  const e = fx(weeks[currentWeek-1]).env;
+  document.getElementById('envGrid').innerHTML = `
+    <div class="env-cell"><div class="lbl">${t('envCO2')}</div><div class="val">${trCO2(e.co2)}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envEC')}</div><div class="val">${trEC(e.ec)}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envTOn')}</div><div class="val">${e.tOn}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envTOff')}</div><div class="val">${e.tOff}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envRH')}</div><div class="val">${e.rh}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envVPD')}</div><div class="val">${e.vpd}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envFans')}</div><div class="val">${trFans(e.fans)}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envExhaust')}</div><div class="val">${trExhaust(e.exhaust)}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envAutoDim')}</div><div class="val">${e.autoDim}</div></div>
+    <div class="env-cell"><div class="lbl">${t('envAutoShut')}</div><div class="val">${e.autoShut}</div></div>
+  `;
+}
+
+function renderChart(){
+  const svg = document.getElementById('chart');
+  const vals = weeks.map(w=> fx(w).ppfd);
+  const min=Math.min(...vals), max=Math.max(...vals), pad=(max-min)*0.25||50;
+  const yMin=min-pad, yMax=max+pad;
+  const x = i => 40 + i*((900-80)/8);
+  const y = v => 140 - ((v-yMin)/(yMax-yMin))*120;
+  let path = vals.map((v,i)=> `${i===0?'M':'L'} ${x(i)} ${y(v)}`).join(' ');
+  let dots = vals.map((v,i)=>{
+    const active=(i+1)===currentWeek;
+    return `<circle cx="${x(i)}" cy="${y(v)}" r="${active?6:4}" fill="${active?'var(--ch-red)':'var(--ch-main)'}" stroke="var(--bg)" stroke-width="2"/>
+            <text x="${x(i)}" y="${y(v)-14}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="${active?'var(--ch-red)':'var(--text-faint)'}">${Math.round(v)}</text>`;
+  }).join('');
+  svg.innerHTML = `<line x1="40" y1="140" x2="860" y2="140" stroke="var(--line)" stroke-width="1"/>
+    <path d="${path}" fill="none" stroke="var(--ch-red)" stroke-width="2" opacity="0.85"/>${dots}`;
+}
+
+function renderArc(){
+  const strips = document.getElementById('arcStrips');
+  const nums = document.getElementById('arcNums');
+  strips.innerHTML=''; nums.innerHTML='';
+  weeks.forEach(w=>{
+    const d = fx(w);
+    const {mainPct,frPct,uvPct} = segWatts(d.mainMid, d.frMid, d.uvMid);
+    const div = document.createElement('div');
+    div.className = 'arc-strip' + (w.n===currentWeek?' active':'');
+    div.innerHTML = `<div class="seg" style="flex-basis:${mainPct}%;background:linear-gradient(90deg,var(--ch-main),var(--ch-red));"></div>
+      <div class="seg" style="flex-basis:${frPct}%;background:var(--ch-farred);"></div>
+      <div class="seg" style="flex-basis:${uvPct}%;background:var(--ch-uv);"></div>`;
+    div.addEventListener('click', ()=>{ currentWeek=w.n; renderAll(); });
+    strips.appendChild(div);
+    const span = document.createElement('span');
+    span.textContent = LANG==='zh' ? `${w.n}周` : 'W'+w.n;
+    nums.appendChild(span);
+  });
+}
+
+function applyStaticI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.documentElement.setAttribute('lang', LANG==='zh' ? 'zh-Hans' : 'en');
+  document.body.setAttribute('data-lang', LANG);
+  document.title = t('title');
+  langBtn.textContent = LANG==='zh' ? 'EN' : '中文';
+  applyFixtureUI();
+}
+
+function applyFixtureUI(){
+  const names = {'760':'Redline SpecTune 760W ST','1000':'Redline SpecTune 1000W ST','1200':'Redline SpecTune 1200W ST XL'};
+  document.getElementById('fxName').textContent = names[FIXTURE];
+  document.getElementById('fxWarn').classList.toggle('show', FIXTURE!=='760');
+  document.querySelectorAll('#fxToggle button').forEach(b=> b.classList.toggle('active', b.dataset.fx===FIXTURE));
+}
+
+function renderMasterTable(){
+  const table = document.getElementById('mtTable');
+  let head = `<tr><th>${LANG==='zh'?'参数':'Parameter'}</th>` + weeks.map(w=> `<th>${LANG==='zh'?w.n+'周':'Wk '+w.n}<br><span style="font-weight:400;color:var(--text-faint);font-size:9px;">${dayRange(w.n)}</span></th>`).join('') + `</tr>`;
+  let body = MASTER_ROWS.map(row=>{
+    if(row.section){
+      return `<tr class="mt-section"><td colspan="${weeks.length+1}">${t(row.section)}</td></tr>`;
+    }
+    const cells = weeks.map(w=>{
+      const d = fx(w);
+      const cls = row.cls ? row.cls(w,d) : '';
+      return `<td class="${cls}">${row.get(w,d)}</td>`;
+    }).join('');
+    return `<tr><td>${t(row.key)}</td>${cells}</tr>`;
+  }).join('');
+  table.innerHTML = head + body;
+}
+
+function renderAll(){
+  renderRail(); renderSPD(); renderSpecTrack(); renderStrip(); renderTimeline();
+  renderStats(); renderEnv(); renderChart(); renderArc(); renderMasterTable();
+}
+
+const SUN_PATHS = `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>`;
+const MOON_PATH = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+let theme = 'light';
+const themeBtn = document.getElementById('themeBtn');
+const themeIcon = document.getElementById('themeIcon');
+themeBtn.addEventListener('click', ()=>{
+  theme = theme==='dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  themeIcon.innerHTML = theme==='dark' ? SUN_PATHS : MOON_PATH;
+  themeBtn.setAttribute('aria-label', theme==='dark' ? t('ariaToLight') : t('ariaToDark'));
+});
+
+const langBtn = document.getElementById('langBtn');
+langBtn.addEventListener('click', ()=>{
+  LANG = LANG==='en' ? 'zh' : 'en';
+  applyStaticI18n();
+  themeBtn.setAttribute('aria-label', theme==='dark' ? t('ariaToLight') : t('ariaToDark'));
+  renderAll();
+});
+
+document.getElementById('fxToggle').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  FIXTURE = btn.dataset.fx;
+  applyFixtureUI();
+  renderAll();
+});
+
+function minToHHMM(min){ return `${Math.floor(min/60).toString().padStart(2,'0')}:${(min%60).toString().padStart(2,'0')}`; }
+function syncLoUI(){
+  document.querySelectorAll('#loPresets button').forEach(b=> b.classList.toggle('active', parseInt(b.dataset.lo)===LIGHTS_ON_MIN));
+  document.getElementById('loCustom').value = minToHHMM(LIGHTS_ON_MIN);
+}
+document.getElementById('loPresets').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  LIGHTS_ON_MIN = parseInt(btn.dataset.lo);
+  syncLoUI();
+  renderAll();
+});
+document.getElementById('loCustom').addEventListener('change', (e)=>{
+  const [h,m] = e.target.value.split(':').map(Number);
+  if(isNaN(h)||isNaN(m)) return;
+  LIGHTS_ON_MIN = h*60+m;
+  syncLoUI();
+  renderAll();
+});
+syncLoUI();
+
+applyStaticI18n();
+renderAll();
+</script>
+</body>
+</html>
