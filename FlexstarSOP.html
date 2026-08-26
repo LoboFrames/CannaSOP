@@ -152,6 +152,7 @@
 
   footer{margin-top:10px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--text-faint);line-height:1.6;}
   footer strong{color:var(--text-dim);}
+  .copyright{color:var(--text-dim);font-weight:600;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--line);}
 
   @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
 </style>
@@ -322,7 +323,7 @@
   </div>
 
   <footer>
-    <strong data-i18n="footerSource">Source:</strong> <span data-i18n="footerSourceText">Flexstar rep-provided protocol, cross-verified against the source HTML file, two revisions of the Redline SpecTune x5 controller manual, and the Redline datasheet. Confirmed control ranges: Light 25–100%, Spectrum 40–50% Red (confirmed across 760W ST, 1000W ST, and 1200W ST XL), UV 25–100%, Far-Red 25–100% (not yet confirmed per-wattage — worth checking).</span>
+    <div class="copyright" data-i18n="copyrightNotice" id="copyrightLine">© 2026 Lobo Frames. Independently built by Lobo Frames, incorporating Flexstar's published specifications and rep-provided SOP recommendations. Please credit Lobo Frames if sharing, adapting, or redistributing this dashboard.</div>
     <span data-i18n="footerWatt">Spectrum-mix bars are watt-weighted using the 760W ST's real channel ceilings (Main 645W / Far-Red 75W / UV 40W), not raw dial % — Far-Red and UV stay a thin slice even at full dial.</span>
     <span data-i18n="footerSchedule">Schedule examples use an illustrative 1:00AM lights-on / 1:00PM lights-off anchor; shift to match your actual timer.</span>
   </footer>
@@ -370,8 +371,7 @@ const I18N = {
     mtMain:"Main Light %", mtPPFD:"PPFD (µmol/m²/s)", mtSpec:"Spectrum (% Red)", mtFR:"Far-Red %", mtUV:"UV %",
     mtCO2:"CO2 (ppm)", mtEC:"EC (mS/cm)", mtTOn:"Temp, Lights-On", mtTOff:"Temp, Lights-Off", mtRH:"RH", mtVPD:"VPD (kPa)",
     mtFans:"Fans", mtExhaust:"Exhaust", mtAutoDim:"Auto Dim", mtAutoShut:"Auto Shutdown", mtPhase:"Phase Goal",
-    footerSource:"Source:",
-    footerSourceText:"Flexstar rep-provided protocol, cross-verified against the source HTML file, two revisions of the Redline SpecTune x5 controller manual, and the Redline datasheet. Confirmed control ranges: Light 25–100%, Spectrum 40–50% Red (confirmed across 760W ST, 1000W ST, and 1200W ST XL), UV 25–100%, Far-Red 25–100% (not yet confirmed per-wattage — worth checking).",
+    copyrightNotice:"© {YEAR} Lobo Frames. Independently built by Lobo Frames, incorporating Flexstar’s published specifications and rep-provided SOP recommendations. Please credit Lobo Frames if sharing, adapting, or redistributing this dashboard.",
     footerWatt:"Spectrum-mix bars are watt-weighted using the 760W ST's real channel ceilings (Main 645W / Far-Red 75W / UV 40W), not raw dial % — Far-Red and UV stay a thin slice even at full dial.",
     footerSchedule:"All clock times recalculate live from the Lights-on setting above the timeline — pick your room's actual schedule and every Entry time on the page updates to match.",
     ariaToLight:"Switch to light theme", ariaToDark:"Switch to dark theme",
@@ -417,8 +417,7 @@ const I18N = {
     mtMain:"主光强度 %", mtPPFD:"PPFD（μmol/m²/s）", mtSpec:"光谱（% 红光）", mtFR:"远红外 %", mtUV:"紫外线 %",
     mtCO2:"CO2（ppm）", mtEC:"EC（mS/cm）", mtTOn:"开灯温度", mtTOff:"关灯温度", mtRH:"湿度 RH", mtVPD:"VPD（kPa）",
     mtFans:"循环风扇", mtExhaust:"排风/进风", mtAutoDim:"自动调光", mtAutoShut:"自动关闭", mtPhase:"阶段目标",
-    footerSource:"来源：",
-    footerSourceText:"Flexstar代表提供的方案，已与源HTML文件、两版Redline SpecTune x5控制器说明书及Redline数据表交叉核实。已确认的控制范围：主光25–100%，光谱40–50%红光（760W ST、1000W ST、1200W ST XL均已确认），紫外线25–100%，远红外25–100%（尚未按瓦数分别确认 — 建议一并核实）。",
+    copyrightNotice:"© {YEAR} Lobo Frames。由Lobo Frames独立开发，参考了Flexstar公开的产品规格及代表提供的SOP建议。如需分享、改编或转发本面板，请注明来源为Lobo Frames。",
     footerWatt:"光谱占比条形图按760W ST真实通道功率上限加权计算（主光645W / 远红外75W / 紫外线40W），而非直接使用旋钮百分比 — 即使旋钮开到100%，远红外和紫外线占比依然很小。",
     footerSchedule:"页面上所有具体时钟时间均根据时间轴上方的开灯时间设置实时计算 — 选择贵设施实际的排程，页面上每个时段的时间会自动同步更新。",
     ariaToLight:"切换为浅色主题", ariaToDark:"切换为深色主题",
@@ -735,6 +734,7 @@ function renderArc(){
 
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.getElementById('copyrightLine').textContent = t('copyrightNotice').replace('{YEAR}', new Date().getFullYear());
   document.documentElement.setAttribute('lang', LANG==='zh' ? 'zh-Hans' : 'en');
   document.body.setAttribute('data-lang', LANG);
   document.title = t('title');
