@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flexstar SpecTune — UV与远红外优化使用方案</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    background: #0f0f0f;
+    color: #cccccc;
+    padding: 16px;
+  }
+
+  /* Header */
+  .header {
+    background: #00B894;
+    padding: 10px 16px 8px;
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+  .header-left .brand { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+  .header-left .sub { font-size: 9px; color: #003D2E; margin-top: 1px; }
+  .header-center .title { font-size: 14px; font-weight: 600; color: #fff; }
+  .header-center .subtitle { font-size: 9px; color: #003D2E; margin-top: 2px; }
+  .header-right { font-size: 9px; color: #003D2E; font-weight: 600; text-align: right; }
+
+  /* Strategy box */
+  .strategy {
+    background: #0d3525;
+    border: 1.5px solid #00B894;
+    border-radius: 4px;
+    padding: 8px 14px;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .strategy-label { color: #00B894; font-weight: 700; white-space: nowrap; }
+  .strategy-text { color: #ccffe8; line-height: 1.5; }
+
+  /* Table */
+  .sop-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #555;
+    font-size: 11px;
+  }
+  .sop-table th {
+    background: #111;
+    color: #fff;
+    padding: 7px 6px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid #333;
+    line-height: 1.4;
+    font-size: 11px;
+  }
+  .sop-table th:first-child { text-align: left; padding-left: 10px; }
+  .sop-table td {
+    padding: 7px 6px;
+    text-align: center;
+    border: 1px solid #2a2a2a;
+    line-height: 1.45;
+    vertical-align: middle;
+  }
+  .sop-table td:first-child {
+    text-align: left;
+    padding-left: 10px;
+    font-weight: 600;
+    color: #f0f0f0;
+    white-space: nowrap;
+  }
+  .row-even { background: #1c1c1c; }
+  .row-odd  { background: #242424; }
+
+  .section-row td {
+    background: #2a2a2a !important;
+    color: #aaaaaa;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    text-align: left;
+  }
+
+  .off   { color: #E53935; font-weight: 700; }
+  .peak  { color: #00897B; font-weight: 700; }
+  .fade  { color: #666; }
+  .amber { color: #F9A825; }
+
+  /* Phase headers color */
+  .ph1 { color: #69b86b; }
+  .ph2 { color: #ffb74d; }
+  .ph3 { color: #f48fb1; }
+  .ph4 { color: #64b5f6; }
+  .ph5 { color: #888; }
+
+  /* Notes */
+  .notes {
+    background: #1c1c1c;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 20px;
+  }
+  .notes-title {
+    color: #00B894;
+    font-weight: 700;
+    font-size: 11px;
+    grid-column: 1 / -1;
+    margin-bottom: 4px;
+  }
+  .note-item {
+    font-size: 10px;
+    color: #cccccc;
+    line-height: 1.5;
+    padding-left: 12px;
+    position: relative;
+  }
+  .note-item::before { content: '•'; position: absolute; left: 0; color: #555; }
+  .note-item.highlight::before { color: #F9A825; }
+  .note-item.highlight { color: #F9A825; }
+
+  /* Footer */
+  .footer {
+    background: #1c1c1c;
+    color: #555;
+    font-size: 9px;
+    text-align: left;
+    padding: 5px 10px;
+    margin-top: 8px;
+    border-radius: 0 0 4px 4px;
+  }
+
+  /* Print */
+  @media print {
+    @page { size: A4 landscape; margin: 8mm; }
+    body { background: #0f0f0f; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="brand">FLEXSTAR</div>
+    <div class="sub">ADVANCED GROW LIGHTING</div>
+  </div>
+  <div class="header-center">
+    <div class="title">Redline SpecTune — UV与远红外优化使用方案 | 大麻花期SOP</div>
+    <div class="subtitle">12/12光照周期 | 椰糠/水培基础参数 | 单层种植</div>
+  </div>
+  <div class="header-right">中文版 | Flexstar 2026</div>
+</div>
+
+<div class="strategy">
+  <span class="strategy-label">核心策略：</span>
+  <span class="strategy-text">第3-4周开始UV缓慢爬坡。远红外第1-6周与主光同开（Emerson效应提升光合），之后关闭。UV第6-7周达到峰值（每天分两段开），第8周减量，收割前5天全部关闭。CO₂与EC始终与光强同步提升。</span>
+</div>
+
+<table class="sop-table">
+  <thead>
+    <tr>
+      <th style="width:13%">参数</th>
+      <th style="width:16%"><span class="ph1">第1–3周</span><br>早花期</th>
+      <th style="width:16%"><span class="ph2">第3–6周</span><br>中花期</th>
+      <th style="width:16%"><span class="ph3">第4–6周</span><br>UV爬坡期</th>
+      <th style="width:16%"><span class="ph4">第6–8周</span><br>晚花期</th>
+      <th style="width:16%"><span class="ph5">第8–9周</span><br>收尾冲洗</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr class="section-row"><td colspan="6">光照通道</td></tr>
+
+    <tr class="row-even">
+      <td>主光强度</td>
+      <td>70–80%</td>
+      <td class="peak">100%</td>
+      <td class="peak">100%</td>
+      <td class="peak">100%</td>
+      <td class="fade">80%</td>
+    </tr>
+
+    <tr class="row-odd">
+      <td>PPFD（μmol/m²/s）</td>
+      <td>~1005</td>
+      <td class="peak">~1435</td>
+      <td class="peak">~1435</td>
+      <td class="peak">~1435</td>
+      <td class="fade">~1148</td>
+    </tr>
+
+    <tr class="row-even">
+      <td>远红外 FR</td>
+      <td>25–30%<br><small>关灯后 10分钟</small></td>
+      <td>40–50%<br><small>与主光同开<br>全程</small></td>
+      <td>40–50%<br><small>与主光同开<br>全程</small></td>
+      <td class="off">关闭</td>
+      <td class="off">关闭</td>
+    </tr>
+
+    <tr class="row-odd">
+      <td>紫外线 UV</td>
+      <td class="off">关闭</td>
+      <td class="off">关闭<br><small>（第3周末前）</small></td>
+      <td>20–30%<br><small>每天1小时<br>缓慢爬坡</small></td>
+      <td class="peak">60–80%<br><small>每天2–3小时<br>分两段*</small></td>
+      <td class="fade">30–40%<br><small>每天1小时<br>收割前5天停</small></td>
+    </tr>
+
+    <tr class="section-row"><td colspan="6">环境参数</td></tr>
+
+    <tr class="row-even">
+      <td>CO₂（ppm）</td>
+      <td>900–1000</td>
+      <td class="peak">1200–1500</td>
+      <td class="peak">1200–1500</td>
+      <td>1000–1200</td>
+      <td class="fade">自然浓度 ~400</td>
+    </tr>
+
+    <tr class="row-odd">
+      <td>EC（mS/cm）</td>
+      <td>1.8–2.2</td>
+      <td>2.5–3.0</td>
+      <td>2.5–3.0</td>
+      <td class="peak">2.8–3.2</td>
+      <td class="fade">0.5–1.0<br><small>冲洗阶段</small></td>
+    </tr>
+
+    <tr class="row-even">
+      <td>白天温度</td>
+      <td>25–27°C<br><small>77–81°F</small></td>
+      <td>25–27°C<br><small>77–81°F</small></td>
+      <td>25–27°C<br><small>77–81°F</small></td>
+      <td>23–25°C<br><small>73–77°F</small></td>
+      <td class="fade">20–22°C<br><small>68–72°F</small></td>
+    </tr>
+
+    <tr class="row-odd">
+      <td>夜间温度</td>
+      <td>20–22°C</td>
+      <td>20–22°C</td>
+      <td>20–22°C</td>
+      <td>18–20°C</td>
+      <td class="fade">16–18°C</td>
+    </tr>
+
+    <tr class="row-even">
+      <td>湿度 RH</td>
+      <td>55–60%</td>
+      <td>45–50%</td>
+      <td>45–50%</td>
+      <td>40–45%</td>
+      <td class="fade">40–45%</td>
+    </tr>
+
+    <tr class="row-odd">
+      <td>VPD（kPa）</td>
+      <td>0.9–1.1</td>
+      <td>1.1–1.3</td>
+      <td>1.1–1.3</td>
+      <td>1.2–1.5</td>
+      <td class="fade">1.2–1.4</td>
+    </tr>
+
+    <tr class="section-row"><td colspan="6">通风管理</td></tr>
+
+    <tr class="row-even">
+      <td>循环风扇</td>
+      <td>低–中</td>
+      <td>中–高</td>
+      <td>中–高</td>
+      <td>高</td>
+      <td class="fade">中</td>
+    </tr>
+
+    <tr class="row-odd">
+      <td>排风 / 进风</td>
+      <td>标准</td>
+      <td>+10%</td>
+      <td>+10%</td>
+      <td>+20%</td>
+      <td class="fade">标准</td>
+    </tr>
+
+    <tr class="section-row"><td colspan="6">阶段目标</td></tr>
+
+    <tr class="row-even">
+      <td>目标</td>
+      <td>触发开花<br>平稳过渡</td>
+      <td>最大化花点发育<br>推高光合效率</td>
+      <td>开始提升树脂<br>建立UV抗性</td>
+      <td>峰值花苞密度<br>与重量最大化</td>
+      <td class="fade">成熟度与风味<br>干净收尾</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<div class="notes">
+  <div class="notes-title">关键操作规则</div>
+  <div class="note-item highlight">*UV分两段开：早上1.5小时 + 下午1.5小时，比连续照射效果更好</div>
+  <div class="note-item">第7周起关闭FR，花苞进入增重阶段，不需要继续拉伸</div>
+  <div class="note-item">UV只在正午时段开，不在开灯后第一和关灯前最后一小时开</div>
+  <div class="note-item">CO₂只在灯开时有效，关灯时同步关闭，避免浪费</div>
+  <div class="note-item">摘叶后停止UV 3–5天，让植株充分恢复后再重新引入</div>
+  <div class="note-item">高PPFD没有足够CO₂等于浪费电，两者必须同步提升</div>
+  <div class="note-item">UV运行期间保持温度在29°C / 84°F以下</div>
+  <div class="note-item">每周检测排液EC，超过3.5 mS/cm立即冲洗</div>
+  <div class="note-item">FR与主光同开 = Emerson效应，显著提升光合效率</div>
+  <div class="note-item">收割标准：70–80%云雾状 + 10–20%琥珀色trichome，品质最佳</div>
+</div>
+
+<div class="footer">
+  flex-star.com &nbsp;|&nbsp; lorna@flex-star.com &nbsp;|&nbsp; 626 779 6120 &nbsp;|&nbsp; Flexstar Advanced Grow Lighting 2026
+</div>
+
+</body>
+</html>
