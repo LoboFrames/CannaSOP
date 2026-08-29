@@ -197,6 +197,11 @@
   }
   .stage-num.lite { color: #0b0b0b; }
   .stage-name { font-size: 17px; font-weight: 640; margin: 0; }
+  .where {
+    font-size: 11.5px; font-weight: 650; letter-spacing: .04em;
+    color: var(--text-secondary); border: 1px solid var(--border);
+    border-radius: 999px; padding: 3px 10px; background: var(--wash); white-space: nowrap;
+  }
   .tiles { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
   .tile {
     border: 1px solid var(--border); border-radius: 9px; padding: 6px 11px;
@@ -233,6 +238,12 @@
   .callout.warn { --cc: #b07c00; }
   :root[data-theme="dark"] .callout.warn { --cc: var(--status-warning); }
   .callout.tip  { --cc: var(--seq-500); }
+  .callout.new  { --cc: #0a8a0a; }
+  :root[data-theme="dark"] .callout.new { --cc: var(--status-good); }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .callout.new { --cc: var(--status-good); }
+  }
+  .retired { color: var(--text-muted); text-decoration: line-through; }
 
   /* ---------- checklist ---------- */
   .check-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -298,8 +309,9 @@
   <div class="flow">
     <div class="flow-step" style="--sc: var(--stage-1)">
       <div class="n">1</div>
-      <div class="nm" data-zh="打枝间">Buck Room</div>
+      <div class="nm" data-zh="打枝">Bucking</div>
       <div class="meta" data-zh="58–62°F · 55–60% 湿度">58–62°F · 55–60% RH</div>
+      <div class="meta" style="color:var(--text-muted)" data-zh="↳ 在修剪间进行">↳ done in the Trim Room</div>
     </div>
     <div class="flow-arrow">→</div>
     <div class="flow-step" style="--sc: var(--stage-2)">
@@ -338,7 +350,7 @@
     </thead>
     <tbody>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-1)"></span><span data-zh="打枝间">Buck Room</span></td>
+        <td class="room-cell"><span class="swatch" style="background:var(--stage-1)"></span><span data-zh="打枝<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>在修剪间进行</small>">Bucking<br><small style="font-weight:400;color:var(--text-muted)">done in the Trim Room</small></span></td>
         <td class="num">58–62°F <small style="color:var(--text-muted)">(14–17°C)</small></td>
         <td class="num">55–60%</td>
         <td data-zh="正常工作照明">Work lighting</td>
@@ -367,7 +379,7 @@
         <td class="num">50%</td>
         <td data-zh="全黑（料箱加盖）">Dark (lidded totes)</td>
         <td data-zh="长期">Long-term</td>
-        <td data-zh="火鸡袋装入带盖料箱">Turkey bags in lidded totes</td>
+        <td data-zh="折叠袋口的火鸡袋装入带盖料箱">Folded (not tied) turkey bags in lidded totes</td>
       </tr>
     </tbody>
   </table>
@@ -394,16 +406,26 @@
 <article class="stage" style="--sc: var(--stage-1)">
   <div class="stage-head">
     <div class="stage-num lite">1</div>
-    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="打枝间">Buck Room</h2>
+    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="打枝">Bucking</h2>
+    <span class="where" data-zh="地点：修剪间">Location: Trim Room</span>
     <div class="tiles">
-      <div class="tile"><div class="k" data-zh="温度">Temp</div><div class="v">58–62<small>°F</small></div></div>
-      <div class="tile"><div class="k" data-zh="湿度">Humidity</div><div class="v">55–60<small>%</small></div></div>
+      <div class="tile"><div class="k" data-zh="目标温度">Target temp</div><div class="v">58–62<small>°F</small></div></div>
+      <div class="tile"><div class="k" data-zh="目标湿度">Target RH</div><div class="v">55–60<small>%</small></div></div>
       <div class="tile"><div class="k" data-zh="每箱重量">Per tote</div><div class="v">6–7<small data-zh=" 磅"> lb</small></div></div>
     </div>
   </div>
   <div class="stage-body">
+    <div class="callout crit">
+      <span class="ico">▲</span>
+      <div>
+        <span class="lbl" data-zh="下架后立即转移">Straight off the dry room</span>
+        <p data-zh="花一从干燥间下架，必须<strong>立即</strong>搬入修剪间，并在修剪间内完成打枝。打枝间的实际温度达不到 58–62°F 的目标，修剪间更冷，能够达标——所以打枝在修剪间进行。">As soon as the flower is taken down from the dry room it must be moved <strong>immediately</strong> into the trim room and bucked in there. The buck room cannot physically hold the 58–62°F target — the trim room is colder and holds it, so bucking happens there.</p>
+      </div>
+    </div>
     <h3 data-zh="操作要点">Key rules</h3>
     <ol>
+      <li data-zh="花下架后不得在打枝间或走廊停留——直接进入修剪间。">Flower does <strong>not</strong> sit in the buck room or a hallway after take-down — it goes directly into the trim room.</li>
+      <li data-zh="打枝目标环境：58–62°F、55–60% 湿度。修剪间实测 60–62°F、55–58%，处于目标范围内。">Bucking target environment: 58–62°F, 55–60% RH. The trim room runs 60–62°F / 55–58%, which sits inside that target.</li>
       <li data-zh="27 加仑料箱装满之后才开始打枝——不要在未装满时提前开始。">Do <strong>not</strong> begin bucking until the 27 gal tote is full.</li>
       <li data-zh="养护过程中，每个 27 加仑料箱最多装 6–7 磅。">During the cure process, keep each 27 gal tote to <strong>6–7 lb max</strong>.</li>
       <li data-zh="养护首选 54 加仑料箱——表面积更大、堆积更浅。每箱 12–14 磅。">For curing, the <strong>54 gal tote is ideal</strong> — bigger surface area, less depth. 12–14 lb per tote.</li>
@@ -494,6 +516,7 @@
   <div class="stage-head">
     <div class="stage-num">3</div>
     <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="修剪／品检间">Trim / QC Room</h2>
+    <span class="where" data-zh="打枝亦在此进行">Bucking happens here too</span>
     <div class="tiles">
       <div class="tile"><div class="k" data-zh="温度">Temp</div><div class="v">60–62<small>°F</small></div></div>
       <div class="tile"><div class="k" data-zh="湿度">Humidity</div><div class="v">55–58<small>%</small></div></div>
@@ -541,15 +564,24 @@
     </div>
   </div>
   <div class="stage-body">
+    <div class="callout new">
+      <span class="ico">★</span>
+      <div>
+        <span class="lbl" data-zh="方法变更——袋口折叠，不再扎口">Method change — fold, don't tie</span>
+        <p data-zh="火鸡袋现在<strong>只需将袋口向下折叠</strong>，然后放入带盖料箱。<span class=&quot;retired&quot;>旧做法：所有花袋先扎紧袋口再放入料箱</span>——该步骤已取消。">Turkey bags are now <strong>folded over</strong> and placed in the tote. <span class="retired">Previously all flower bags were tied up before going into the totes</span> — that step is retired.</p>
+      </div>
+    </div>
     <h3 data-zh="储存规则">Storage rules</h3>
     <ul>
       <li data-zh="更低的温度和更低的湿度就是能减缓陈化（老化）过程，道理很简单。">Colder, drier temps slow the aging process — plain and simple.</li>
       <li data-zh="使用带盖料箱储存，确保完全避光。">Store in totes to ensure darkness.</li>
+      <li data-zh="把火鸡袋的袋口向下折叠压平，直接放入料箱——不要扎口、不要打结。">Fold the top of the turkey bag over on itself and set it in the tote — <strong>do not tie or knot the bag</strong>.</li>
+      <li data-zh="料箱盖子扣紧，避光即由料箱负责，而不是靠扎紧袋口。">Snap the tote lid on — the tote is what provides the light seal, not the bag closure.</li>
     </ul>
     <h3 data-zh="取样销售流程">Pulling samples for sale</h3>
     <ol>
       <li data-zh="把火鸡袋拿到 65–70°F（18–21°C）的房间。">Move the turkey bag into a <strong>65–70°F</strong> room.</li>
-      <li data-zh="打开袋子 5–10 分钟，进行新鲜氧气交换。">Open the bag for <strong>5–10 minutes</strong> to allow fresh oxygen exchange.</li>
+      <li data-zh="展开袋口，敞开 5–10 分钟，进行新鲜氧气交换。">Unfold and open the bag for <strong>5–10 minutes</strong> to allow fresh oxygen exchange.</li>
       <li data-zh="让树脂回温，释放贮存的萜烯香气。">This lets the resin warm up and release the stored terpenes.</li>
     </ol>
     <div class="callout tip">
@@ -583,7 +615,8 @@
       </ul>
       <h3 style="font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);font-weight:650;margin:16px 0 6px" data-zh="全天——打枝与修剪">Through the day — Buck &amp; Trim</h3>
       <ul class="chk-list">
-        <li><label><input type="checkbox"><span data-zh="打枝间：58–62°F / 55–60% 湿度">Buck room 58–62°F / 55–60% RH</span></label></li>
+        <li><label><input type="checkbox"><span data-zh="干燥间下架的花已立即搬入修剪间——没有花滞留在打枝间">Flower off the dry room moved straight into the trim room — none left sitting in the buck room</span></label></li>
+        <li><label><input type="checkbox"><span data-zh="打枝在修剪间内进行，环境达到 58–62°F / 55–60% 目标">Bucking done inside the trim room, hitting the 58–62°F / 55–60% target</span></label></li>
         <li><label><input type="checkbox"><span data-zh="27 加仑料箱装满后才开始打枝">Bucking only from full 27 gal totes</span></label></li>
         <li><label><input type="checkbox"><span data-zh="养护用料箱重量核对（27 加仑 6–7 磅 / 54 加仑 12–14 磅）">Cure tote weights verified (27 gal 6–7 lb · 54 gal 12–14 lb)</span></label></li>
         <li><label><input type="checkbox"><span data-zh="修剪／品检间：60–62°F / 55–58% 湿度">Trim / QC room 60–62°F / 55–58% RH</span></label></li>
@@ -598,6 +631,7 @@
         <li><label><input type="checkbox"><span data-zh="每箱轻摇 10–15 秒交换氧气">Shake each bin 10–15 sec to exchange oxygen</span></label></li>
         <li><label><input type="checkbox"><span data-zh="重新扣紧所有盖子">All lids snapped back on</span></label></li>
         <li><label><input type="checkbox"><span data-zh="所有成品花已按磅分装，或已折叠内衬并加盖">All finished flower pounded out, or liner folded &amp; lidded</span></label></li>
+        <li><label><input type="checkbox"><span data-zh="火鸡袋袋口折叠（不扎口）后放入料箱">Turkey bags folded over — not tied — and set in totes</span></label></li>
         <li><label><input type="checkbox"><span data-zh="所有料箱均已加盖存放于储存间（全黑）">All totes lidded and in storage (dark)</span></label></li>
         <li><label><input type="checkbox"><span data-zh="储存间：55°F / 50% 湿度">Storage room 55°F / 50% RH</span></label></li>
         <li><label><input type="checkbox"><span data-zh="记录表已填写并签名">Log filled in and initialed</span></label></li>
@@ -692,7 +726,7 @@
 
   /* ---------------- range charts ---------------- */
   var ROOMS = [
-    { en: "Buck", zh: "打枝间", stage: 1, temp: [58, 62], rh: [55, 60] },
+    { en: "Bucking", zh: "打枝", stage: 1, temp: [58, 62], rh: [55, 60] },
     { en: "Cure", zh: "养护间", stage: 2, temp: [60, 60], rh: [55, 55] },
     { en: "Trim / QC", zh: "修剪／品检", stage: 3, temp: [60, 62], rh: [55, 58] },
     { en: "Storage", zh: "储存间", stage: 4, temp: [55, 55], rh: [50, 50] }
