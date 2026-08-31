@@ -18,9 +18,10 @@
     --wash: rgba(11,11,11,0.035);
     /* ordinal stage ramp — one hue, light->dark (validated) */
     --stage-1: #86b6ef;
-    --stage-2: #3987e5;
-    --stage-3: #256abf;
-    --stage-4: #104281;
+    --stage-2: #5598e7;
+    --stage-3: #2a78d6;
+    --stage-4: #1c5cab;
+    --stage-5: #0d366b;
     --seq-500: #256abf;
     --status-critical: #d03b3b;
     --status-warning: #fab219;
@@ -38,10 +39,11 @@
       --axis: #383835;
       --border: rgba(255,255,255,0.10);
       --wash: rgba(255,255,255,0.05);
-      --stage-1: #9ec5f4;
-      --stage-2: #5598e7;
-      --stage-3: #2a78d6;
-      --stage-4: #184f95;
+      --stage-1: #b7d3f6;
+      --stage-2: #86b6ef;
+      --stage-3: #5598e7;
+      --stage-4: #2a78d6;
+      --stage-5: #184f95;
       --seq-500: #3987e5;
     }
   }
@@ -56,10 +58,11 @@
     --axis: #383835;
     --border: rgba(255,255,255,0.10);
     --wash: rgba(255,255,255,0.05);
-    --stage-1: #9ec5f4;
-    --stage-2: #5598e7;
-    --stage-3: #2a78d6;
-    --stage-4: #184f95;
+    --stage-1: #b7d3f6;
+    --stage-2: #86b6ef;
+    --stage-3: #5598e7;
+    --stage-4: #2a78d6;
+    --stage-5: #184f95;
     --seq-500: #3987e5;
   }
 
@@ -275,15 +278,6 @@
     display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;
   }
 
-  /* ---------- print ---------- */
-  @media print {
-    body { background: #fff; font-size: 11.5px; }
-    .wrap { max-width: none; padding: 0; }
-    .controls, #tip { display: none !important; }
-    section.panel, .stage { break-inside: avoid; page-break-inside: avoid; border-color: #ccc; box-shadow: none; }
-    .stage { margin-bottom: 12px; }
-    .chk-list label:hover { background: none; }
-  }
 </style>
 </head>
 <body>
@@ -294,12 +288,11 @@
   <div>
     <p class="eyebrow" data-zh="标准作业程序 · 后处理">Standard Operating Procedure · Post-Processing</p>
     <h1 data-zh="ESG / NLT 后处理 SOP">ESG / NLT Post-Processing SOP</h1>
-    <p class="sub" data-zh="室内大麻种植 · 打枝 → 养护 → 修剪／品检 → 储存">Indoor cannabis cultivation · Buck → Cure → Trim / QC → Storage</p>
+    <p class="sub" data-zh="室内大麻种植 · 打枝 → 修剪前养护 → 机器修剪 → 人工修剪与品控分级 → 分装／储存">Indoor cannabis cultivation · Bucking → Pre-Trim Curing → Machine Trimming → Hand Trim &amp; QC Grading → Packaging / Storage</p>
   </div>
   <div class="controls">
     <button id="langBtn" class="primary" type="button">中文</button>
     <button id="themeBtn" type="button" data-zh="深色">Dark</button>
-    <button id="printBtn" type="button" data-zh="打印">Print</button>
   </div>
 </header>
 
@@ -316,19 +309,28 @@
     <div class="flow-arrow">→</div>
     <div class="flow-step" style="--sc: var(--stage-2)">
       <div class="n">2</div>
-      <div class="nm" data-zh="养护间">Cure Room</div>
-      <div class="meta" data-zh="60°F · 55% 湿度 · 2–3 天">60°F · 55% RH · 2–3 days</div>
+      <div class="nm" data-zh="修剪前养护">Pre-Trim Curing</div>
+      <div class="meta" data-zh="60°F · 55% 湿度 · 1–3 天">60°F · 55% RH · 1–3 days</div>
+      <div class="meta" style="color:var(--text-muted)" data-zh="↳ 天数取决于含水量">↳ length set by moisture</div>
     </div>
     <div class="flow-arrow">→</div>
     <div class="flow-step" style="--sc: var(--stage-3)">
       <div class="n">3</div>
-      <div class="nm" data-zh="修剪／品检间">Trim / QC Room</div>
-      <div class="meta" data-zh="60–62°F · 55–58% 湿度">60–62°F · 55–58% RH</div>
+      <div class="nm" data-zh="机器修剪">Machine Trimming</div>
+      <div class="meta" data-zh="60°F · 55% 湿度 · 由 Rob 操作">60°F · 55% RH · run by Rob</div>
+      <div class="meta" style="color:var(--text-muted)" data-zh="↳ 养护达标后开始">↳ starts when the cure is ready</div>
     </div>
     <div class="flow-arrow">→</div>
     <div class="flow-step" style="--sc: var(--stage-4)">
       <div class="n">4</div>
-      <div class="nm" data-zh="储存间">Storage Room</div>
+      <div class="nm" data-zh="人工修剪与品控分级">Hand Trim &amp; QC Grading</div>
+      <div class="meta" data-zh="60–62°F · 55–58% 湿度">60–62°F · 55–58% RH</div>
+      <div class="meta" style="color:var(--text-muted)" data-zh="↳ 去枝条 + 挑出 A 级">↳ de-stem + pull the A grade</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="--sc: var(--stage-5)">
+      <div class="n">5</div>
+      <div class="nm" data-zh="分装／储存">Packaging / Storage</div>
       <div class="meta" data-zh="55°F · 50% 湿度">55°F · 50% RH</div>
     </div>
   </div>
@@ -340,7 +342,7 @@
   <table>
     <thead>
       <tr>
-        <th data-zh="房间">Room</th>
+        <th data-zh="阶段">Stage</th>
         <th class="num" data-zh="温度">Temp</th>
         <th class="num" data-zh="相对湿度">Humidity</th>
         <th data-zh="灯光">Lights</th>
@@ -358,15 +360,23 @@
         <td data-zh="27 加仑料箱">27 gal tote</td>
       </tr>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-2)"></span><span data-zh="养护间">Cure Room</span></td>
+        <td class="room-cell"><span class="swatch" style="background:var(--stage-2)"></span><span data-zh="修剪前养护">Pre-Trim Curing</span></td>
         <td class="num">60°F <small style="color:var(--text-muted)">(16°C)</small></td>
         <td class="num">55%</td>
         <td data-zh="关灯（全黑）"><strong>Lights off</strong></td>
-        <td data-zh="2–3 天">2–3 days</td>
+        <td data-zh="1–3 天（取决于含水量）">1–3 days <small style="color:var(--text-muted)">(moisture-driven)</small></td>
         <td data-zh="54 加仑料箱（首选）">54 gal tote (ideal)</td>
       </tr>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-3)"></span><span data-zh="修剪／品检间">Trim / QC Room</span></td>
+        <td class="room-cell"><span class="swatch" style="background:var(--stage-3)"></span><span data-zh="机器修剪<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>由 Rob 操作</small>">Machine Trimming<br><small style="font-weight:400;color:var(--text-muted)">run by Rob</small></span></td>
+        <td class="num">60°F <small style="color:var(--text-muted)">(16°C)</small></td>
+        <td class="num">55%</td>
+        <td data-zh="正常工作照明">Work lighting</td>
+        <td data-zh="养护达标后开始">Starts when cure is ready</td>
+        <td data-zh="待定">TBD</td>
+      </tr>
+      <tr>
+        <td class="room-cell"><span class="swatch" style="background:var(--stage-4)"></span><span data-zh="人工修剪与品控分级<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>阿姨们</small>">Hand Trim &amp; QC Grading<br><small style="font-weight:400;color:var(--text-muted)">the aunties</small></span></td>
         <td class="num">60–62°F <small style="color:var(--text-muted)">(16–17°C)</small></td>
         <td class="num">55–58%</td>
         <td data-zh="仅工作照明——成品花避光">Work lighting only</td>
@@ -374,7 +384,7 @@
         <td data-zh="带盖料箱 → 火鸡袋">Lidded tote → turkey bag</td>
       </tr>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-4)"></span><span data-zh="储存间">Storage Room</span></td>
+        <td class="room-cell"><span class="swatch" style="background:var(--stage-5)"></span><span data-zh="分装／储存">Packaging / Storage</span></td>
         <td class="num">55°F <small style="color:var(--text-muted)">(13°C)</small></td>
         <td class="num">50%</td>
         <td data-zh="全黑（料箱加盖）">Dark (lidded totes)</td>
@@ -387,7 +397,7 @@
 
 <!-- ============ RANGE CHARTS ============ -->
 <section class="panel">
-  <h2 data-zh="各房间目标区间">Target ranges by room</h2>
+  <h2 data-zh="各阶段目标区间">Target ranges by stage</h2>
   <div class="charts">
     <div>
       <p class="chart-title" data-zh="温度目标（°F）">Temperature target (°F)</p>
@@ -469,11 +479,11 @@
 <article class="stage" style="--sc: var(--stage-2)">
   <div class="stage-head">
     <div class="stage-num">2</div>
-    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="养护间">Cure Room</h2>
+    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="修剪前养护">Pre-Trim Curing</h2>
     <div class="tiles">
       <div class="tile"><div class="k" data-zh="温度">Temp</div><div class="v">60<small>°F</small></div></div>
       <div class="tile"><div class="k" data-zh="湿度">Humidity</div><div class="v">55<small>%</small></div></div>
-      <div class="tile"><div class="k" data-zh="时长">Duration</div><div class="v">2–3<small data-zh=" 天"> days</small></div></div>
+      <div class="tile"><div class="k" data-zh="时长">Duration</div><div class="v">1–3<small data-zh=" 天"> days</small></div></div>
       <div class="tile"><div class="k" data-zh="灯光">Lights</div><div class="v" style="font-size:14px" data-zh="关灯">Off</div></div>
     </div>
   </div>
@@ -482,7 +492,14 @@
       <span class="ico">!</span>
       <div>
         <span class="lbl" data-zh="全程关灯">Lights off</span>
-        <p data-zh="整个养护期间保持关灯。养护间为 60°F、55% 湿度，持续 2–3 天。">Keep the cure room dark for the entire cure. 60°F, 55% RH, 2–3 days.</p>
+        <p data-zh="整个养护期间保持关灯。养护间为 60°F、55% 湿度。">Keep the cure room dark for the entire cure. 60°F, 55% RH.</p>
+      </div>
+    </div>
+    <div class="callout warn">
+      <span class="ico">!</span>
+      <div>
+        <span class="lbl" data-zh="养护天数由含水量决定，不看日历">Cure length is set by moisture, not the calendar</span>
+        <p data-zh="2–3 天只是常见情况。实际天数取决于从干燥间下来的打枝料的含水量：偏湿的料需要更久，偏干的料 <strong>1–2 天</strong> 就可以。养护达标后，Rob 即可开始机器修剪。">2–3 days is the typical case, not a fixed rule. The real driver is the moisture content of the bucked material coming out of the dry room — wetter material takes longer, drier material can be ready in <strong>1–2 days</strong>. Once the cure is where it needs to be, Rob starts machine trimming.</p>
       </div>
     </div>
     <div class="two-col">
@@ -511,18 +528,94 @@
   </div>
 </article>
 
-<!-- ============ STAGE 3 ============ -->
+<!-- ============ STAGE 3 — MACHINE TRIMMING ============ -->
 <article class="stage" style="--sc: var(--stage-3)">
   <div class="stage-head">
     <div class="stage-num">3</div>
-    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="修剪／品检间">Trim / QC Room</h2>
-    <span class="where" data-zh="打枝亦在此进行">Bucking happens here too</span>
+    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="机器修剪">Machine Trimming</h2>
+    <span class="where" data-zh="由 Rob 操作">Run by: Rob</span>
+    <div class="tiles">
+      <div class="tile"><div class="k" data-zh="温度">Temp</div><div class="v">60<small>°F</small></div></div>
+      <div class="tile"><div class="k" data-zh="湿度">Humidity</div><div class="v">55<small>%</small></div></div>
+      <div class="tile"><div class="k" data-zh="开始时机">Starts</div><div class="v" style="font-size:14px" data-zh="养护达标后">When cure is ready</div></div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="callout tip">
+      <span class="ico">i</span>
+      <div>
+        <span class="lbl" data-zh="启动条件">Trigger</span>
+        <p data-zh="机器修剪不按固定日程开始，而是在养护达标后开始——养护天数取决于打枝料的含水量（见第 2 阶段）。由 Rob 判断并启动。">Machine trimming does not start on a fixed schedule. It starts once the cure is where it needs to be — and how long that takes depends on the moisture content of the bucked material (see Stage 2). Rob makes that call and runs the process.</p>
+      </div>
+    </div>
+    <h3 data-zh="操作要点">Key rules</h3>
+    <ul>
+      <li data-zh="由 Rob 判断料是否达标，并负责操作机器。"><strong>Rob</strong> decides when the material is ready and runs the machine.</li>
+      <li data-zh="上游：第 2 阶段养护完成（1–3 天，按含水量判断）。">Upstream: Stage 2 cure complete (1–3 days, judged by moisture, not the calendar).</li>
+      <li data-zh="环境：60°F、55% 湿度——与养护间相同的目标值。">Environment: <strong>60°F, 55% RH</strong> — the same targets as the cure room.</li>
+      <li data-zh="工作范围：花苞上的叶子全部由机器修剪完成。">Scope: <strong>all of the leaf on the bud is done by the machine</strong> at this stage.</li>
+      <li data-zh="下游：机器修剪完成的花进入第 4 阶段，由阿姨们剪掉残留的枝条和茎梗。">Downstream: machine-trimmed flower moves into Stage 4, where the aunties take off the leftover branches and stems.</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ============ STAGE 4 — TRIM / QC ============ -->
+<article class="stage" style="--sc: var(--stage-4)">
+  <div class="stage-head">
+    <div class="stage-num">4</div>
+    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="人工修剪与品控分级">Hand Trim &amp; QC Grading</h2>
+    <span class="where" data-zh="人工修剪：阿姨们">Hand trim: the aunties</span>
     <div class="tiles">
       <div class="tile"><div class="k" data-zh="温度">Temp</div><div class="v">60–62<small>°F</small></div></div>
       <div class="tile"><div class="k" data-zh="湿度">Humidity</div><div class="v">55–58<small>%</small></div></div>
     </div>
   </div>
   <div class="stage-body">
+    <div class="callout tip">
+      <span class="ico">i</span>
+      <div>
+        <span class="lbl" data-zh="本阶段工作范围">What this stage trims</span>
+        <p data-zh="阿姨们拿到的是机器修剪后的花。花苞上的叶子已由机器修剪（第 3 阶段）全部处理完毕——她们要处理的是<strong>残留的枝条和茎梗</strong>，而不是再修花苞上的叶子。">The aunties receive machine-trimmed flower. All of the leaf on the bud itself is already done by the machine trim (Stage 3) — what they are trimming is the <strong>leftover branch and stem material</strong>, not leaf on the bud.</p>
+      </div>
+    </div>
+    <h3 data-zh="工作范围">Scope of hand trim</h3>
+    <ul>
+      <li data-zh="上游：来自第 3 阶段机器修剪的花（花苞上的叶子已修完）。">Incoming: machine-trimmed flower from Stage 3 — bud leaf already removed.</li>
+      <li data-zh="阿姨们负责：剪掉残留的枝条和茎梗。">Aunties do: take off the leftover branches and stems.</li>
+      <li data-zh="阿姨们负责：修剪时把 A 级（大花）挑出来；B 和 C 放在一起，不用再细分。">Aunties do: pull out the <strong>A</strong> grade (big nugs) as they trim. <strong>B and C go together</strong> in one bin — no need to split them.</li>
+      <li data-zh="不是多一道工序：剪掉枝条和茎梗的<strong>同时</strong>就把大花挑出来放进单独的箱里，不需要再单独过一遍。">Not a second pass: the sorting happens <strong>in the same motion</strong> as the trimming — as the branches and stems come off, the big nugs go straight into their own bin.</li>
+      <li data-zh="下游：修剪完成的花按下述流程分级、按磅分装、加盖入库。">Outgoing: finished flower sorted, pounded out and lidded per the handling steps below.</li>
+    </ul>
+
+    <div class="callout new">
+      <span class="ico">★</span>
+      <div>
+        <span class="lbl" data-zh="方法变更——边修剪边分级">Method change — grade while trimming</span>
+        <p data-zh="阿姨们现在在修剪时把 <strong>A 级（大花）</strong>挑出来，B 和 C 合在一起，之后在筛盘上分开。<span class=&quot;retired&quot;>旧做法：所有大小混在一起往下走，全部靠筛盘分离</span>——如果之前有人说「ESG 不用挑选」，现在的标准是要挑出 A 级。">The aunties now pull the <strong>A</strong> grade out as they trim; B and C stay together and get split later on the sifting tray. <span class="retired">Previously all sizes moved forward together and were separated entirely on the sifting tray</span> — if anyone was told "ESG doesn't sort," that has changed.</p>
+      </div>
+    </div>
+    <h3 data-zh="为什么要在修剪台上分级">Why sort at the trim table</h3>
+    <ul>
+      <li data-zh="先把 A 级挑出来后，过筛盘所需的次数大幅减少——同一批料大约 5 次就能筛干净，而不是 10 次。">With the A grade already pulled out, the rest needs far fewer passes on the sifting tray — roughly <strong>5 passes instead of 10</strong> on the same lot.</li>
+      <li data-zh="每多过一次筛都会磨损花朵。次数越少，磨损越小，成品品质越好。">Every extra pass abrades the flower. Fewer passes means less wear and a better finished product.</li>
+      <li data-zh="唯一多出来的成本：B／C 那一箱要多称一次重。">The only added cost: one extra weigh-in for the B/C bin.</li>
+    </ul>
+    <h3 data-zh="分级标准">Grades</h3>
+    <table>
+      <thead>
+        <tr>
+          <th data-zh="等级">Grade</th>
+          <th data-zh="叫法">Called</th>
+          <th data-zh="内容">What it is</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="num"><strong>A</strong></td><td data-zh="大花">A grade</td><td data-zh="最大的花苞">The biggest flower nugs</td></tr>
+        <tr><td class="num"><strong>B</strong></td><td><strong data-zh="小花">Smalls</strong></td><td data-zh="中等大小的花苞">Medium-sized nugs</td></tr>
+        <tr><td class="num"><strong>C</strong></td><td><strong data-zh="微花">Micros</strong></td><td data-zh="极小的花苞">Very small flower nugs</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12.5px;color:var(--text-secondary);margin:10px 0 16px" data-zh="在人工修剪环节只需挑出 <strong>A 级</strong>；B 与 C 合在一起，之后在筛盘上分开。">At hand trim only the <strong>A</strong> grade is separated. B and C are split later on the sifting tray.</p>
     <div class="callout crit">
       <span class="ico">▲</span>
       <div>
@@ -553,11 +646,11 @@
   </div>
 </article>
 
-<!-- ============ STAGE 4 ============ -->
-<article class="stage" style="--sc: var(--stage-4)">
+<!-- ============ STAGE 5 — STORAGE ============ -->
+<article class="stage" style="--sc: var(--stage-5)">
   <div class="stage-head">
-    <div class="stage-num">4</div>
-    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="储存间">Storage Room</h2>
+    <div class="stage-num">5</div>
+    <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="分装／储存">Packaging / Storage</h2>
     <div class="tiles">
       <div class="tile"><div class="k" data-zh="温度">Temp</div><div class="v">55<small>°F</small></div></div>
       <div class="tile"><div class="k" data-zh="湿度">Humidity</div><div class="v">50<small>%</small></div></div>
@@ -571,7 +664,7 @@
         <p data-zh="火鸡袋现在<strong>只需将袋口向下折叠</strong>，然后放入带盖料箱。<span class=&quot;retired&quot;>旧做法：所有花袋先扎紧袋口再放入料箱</span>——该步骤已取消。">Turkey bags are now <strong>folded over</strong> and placed in the tote. <span class="retired">Previously all flower bags were tied up before going into the totes</span> — that step is retired.</p>
       </div>
     </div>
-    <h3 data-zh="储存规则">Storage rules</h3>
+    <h3 data-zh="分装与储存规则">Packaging &amp; storage rules</h3>
     <ul>
       <li data-zh="更低的温度和更低的湿度就是能减缓陈化（老化）过程，道理很简单。">Colder, drier temps slow the aging process — plain and simple.</li>
       <li data-zh="使用带盖料箱储存，确保完全避光。">Store in totes to ensure darkness.</li>
@@ -604,7 +697,7 @@
   </div>
   <div class="check-cols">
     <div>
-      <h3 style="font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);font-weight:650;margin:0 0 6px" data-zh="早晨——养护间">Morning — Cure Room</h3>
+      <h3 style="font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);font-weight:650;margin:0 0 6px" data-zh="早晨——修剪前养护">Morning — Pre-Trim Curing</h3>
       <ul class="chk-list">
         <li><label><input type="checkbox"><span data-zh="核对养护间读数：60°F / 55% 湿度 / 关灯">Confirm cure room reads 60°F / 55% RH / lights off</span></label></li>
         <li><label><input type="checkbox"><span data-zh="打开所有料箱的盖子">Lids off all totes</span></label></li>
@@ -619,7 +712,9 @@
         <li><label><input type="checkbox"><span data-zh="打枝在修剪间内进行，环境达到 58–62°F / 55–60% 目标">Bucking done inside the trim room, hitting the 58–62°F / 55–60% target</span></label></li>
         <li><label><input type="checkbox"><span data-zh="27 加仑料箱装满后才开始打枝">Bucking only from full 27 gal totes</span></label></li>
         <li><label><input type="checkbox"><span data-zh="养护用料箱重量核对（27 加仑 6–7 磅 / 54 加仑 12–14 磅）">Cure tote weights verified (27 gal 6–7 lb · 54 gal 12–14 lb)</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="修剪／品检间：60–62°F / 55–58% 湿度">Trim / QC room 60–62°F / 55–58% RH</span></label></li>
+        <li><label><input type="checkbox"><span data-zh="养护料含水量已检查——是否达标由 Rob 判断后开始机器修剪">Cure checked by moisture — Rob confirms it's ready before machine trimming starts</span></label></li>
+        <li><label><input type="checkbox"><span data-zh="人工修剪间：60–62°F / 55–58% 湿度">Hand trim room 60–62°F / 55–58% RH</span></label></li>
+        <li><label><input type="checkbox"><span data-zh="人工修剪时已挑出 A 级；B／C 合在一起">A grade pulled out at the trim table; B/C kept together</span></label></li>
         <li><label><input type="checkbox"><span data-zh="成品花装满即刻搬入储存间按磅分装">Finished totes moved to storage &amp; pounded out immediately</span></label></li>
         <li><label><input type="checkbox"><span data-zh="修剪间没有任何敞口、见光的成品花">No uncovered finished flower left in the trim room</span></label></li>
       </ul>
@@ -640,7 +735,7 @@
         <span class="ico">!</span>
         <div>
           <span class="lbl" data-zh="提醒">Reminder</span>
-          <p data-zh="本检查表的勾选状态不会保存——刷新页面即清空。每日请打印或填写下方记录表留档。">Checkbox state is not saved — it clears on refresh. Print or fill the log below for the daily record.</p>
+          <p data-zh="本检查表的勾选状态不会保存——刷新页面即清空。请在下方记录表中填写当日数据。">Checkbox state is not saved — it clears on refresh. Use the log below for the daily record.</p>
         </div>
       </div>
     </div>
@@ -669,7 +764,6 @@
   </table>
   <div style="margin-top:14px" class="controls">
     <button id="addRowBtn" type="button" data-zh="＋ 添加一行">+ Add row</button>
-    <button id="printLogBtn" type="button" data-zh="打印记录表">Print log</button>
   </div>
 </section>
 
@@ -721,15 +815,14 @@
     themeBtn.innerHTML = themeBtn.getAttribute(lang === "zh" ? "data-zh" : "data-en");
   });
 
-  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
-  document.getElementById("printLogBtn").addEventListener("click", function () { window.print(); });
 
   /* ---------------- range charts ---------------- */
   var ROOMS = [
     { en: "Bucking", zh: "打枝", stage: 1, temp: [58, 62], rh: [55, 60] },
-    { en: "Cure", zh: "养护间", stage: 2, temp: [60, 60], rh: [55, 55] },
-    { en: "Trim / QC", zh: "修剪／品检", stage: 3, temp: [60, 62], rh: [55, 58] },
-    { en: "Storage", zh: "储存间", stage: 4, temp: [55, 55], rh: [50, 50] }
+    { en: "Pre-Trim Cure", zh: "修剪前养护", stage: 2, temp: [60, 60], rh: [55, 55] },
+    { en: "Machine Trim", zh: "机器修剪", stage: 3, temp: [60, 60], rh: [55, 55] },
+    { en: "Hand Trim", zh: "人工修剪", stage: 4, temp: [60, 62], rh: [55, 58] },
+    { en: "Packaging / Storage", zh: "分装／储存", stage: 5, temp: [55, 55], rh: [50, 50] }
   ];
   var tip = document.getElementById("tip");
   function showTip(e, html) {
