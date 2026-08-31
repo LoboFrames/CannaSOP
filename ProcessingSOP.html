@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ESG / NLT Post-Processing SOP</title>
 <style>
   :root {
@@ -68,6 +68,7 @@
 
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     background: var(--plane);
     color: var(--text-primary);
@@ -142,6 +143,11 @@
     margin-right: 7px; vertical-align: middle;
   }
   .room-cell { font-weight: 580; white-space: nowrap; }
+  .tw { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .scroll-hint { display: none; }
+
+  /* ---------- mobile stage nav (phones only) ---------- */
+  .mnav { display: none; }
 
   /* ---------- range charts ---------- */
   .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
@@ -272,6 +278,122 @@
   }
   .log-table input:focus { outline: none; border-bottom-color: var(--seq-500); }
 
+  /* ========== TABLET & PHONE: tables restyle, flow wraps as cards ========== */
+  @media (max-width: 900px) {
+    /* stacked tables — each row becomes a labelled card */
+    .stack { font-size: 14px; }
+    .stack thead { display: none; }
+    .stack, .stack tbody, .stack tr, .stack td { display: block; width: 100%; }
+    .stack tr { padding: 12px 0; border-bottom: 1px solid var(--axis); }
+    .stack tbody tr:last-child { border-bottom: none; padding-bottom: 0; }
+    .stack td {
+      display: block; position: relative;
+      border: none; padding: 4px 0 4px 102px; white-space: normal;
+    }
+    .stack td::before {
+      content: attr(data-label);
+      position: absolute; left: 0; top: 7px; width: 94px;
+      font-size: 10.5px; line-height: 1.3; letter-spacing: .05em; text-transform: uppercase;
+      font-weight: 650; color: var(--text-muted);
+    }
+    .stack td:first-child {
+      padding-left: 0; font-size: 15.5px; font-weight: 640; margin-bottom: 6px;
+    }
+    .stack td:first-child::before { content: none; }
+
+    /* log table keeps its grid, scrolls sideways */
+    .scroll-hint { display: block; font-size: 12px; color: var(--text-muted); margin: -8px 0 12px; }
+    .log-table { min-width: 760px; font-size: 13px; }
+    .log-table input { font-size: 16px; }
+  }
+  @media (min-width: 701px) and (max-width: 900px) {
+    .flow-arrow { display: none; }
+    .flow-step { flex: 1 1 216px; }
+  }
+
+  /* ================= PHONE ================= */
+  @media (max-width: 700px) {
+    body { font-size: 15.5px; }
+    .wrap {
+      padding: 18px max(14px, env(safe-area-inset-left)) calc(48px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-right));
+    }
+
+    /* header */
+    header.top { gap: 12px; padding-bottom: 14px; margin-bottom: 0; border-bottom: none; }
+    h1 { font-size: 22px; }
+    .sub { font-size: 13px; }
+    header.top .controls { display: none; }
+
+    /* sticky stage nav */
+    .mnav {
+      display: flex; gap: 8px; align-items: center;
+      position: sticky; top: 0; z-index: 40;
+      margin: 0 calc(-1 * max(14px, env(safe-area-inset-left))) 18px;
+      padding: 8px max(14px, env(safe-area-inset-left));
+      background: var(--plane); border-bottom: 1px solid var(--border);
+    }
+    .mnav-links {
+      display: flex; gap: 6px; overflow-x: auto; flex: 1;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 18px), transparent);
+      mask-image: linear-gradient(to right, #000 calc(100% - 18px), transparent);
+      padding-right: 4px;
+    }
+    .mnav-links::-webkit-scrollbar { display: none; }
+    .mnav-links a {
+      flex: none; text-decoration: none; white-space: nowrap;
+      font-size: 12.5px; font-weight: 600; color: var(--text-secondary);
+      background: var(--surface-1); border: 1px solid var(--border);
+      border-radius: 999px; padding: 7px 12px;
+      border-left: 3px solid var(--sc);
+    }
+    .mnav-links a:active { background: var(--wash); }
+    .mnav .controls { flex: none; gap: 6px; }
+    .mnav button { padding: 7px 10px; font-size: 12.5px; }
+
+    /* flow strip stacks */
+    .flow { flex-direction: column; gap: 6px; }
+    .flow-step { flex: 0 0 auto; min-width: 0; padding: 10px 12px; }
+    .flow-arrow { transform: rotate(90deg); font-size: 13px; align-self: center; line-height: 1; }
+
+    /* panels & stages */
+    section.panel { padding: 16px 14px 18px; border-radius: 10px; }
+    .stage { border-radius: 10px; margin-bottom: 16px; }
+    .stage-head { padding: 14px 14px; gap: 10px; }
+    .stage-name { font-size: 16px; }
+    .stage[id] { scroll-margin-top: 56px; }
+    .tiles { margin-left: 0; width: 100%; gap: 6px; }
+    .tile { flex: 1 1 84px; min-width: 0; padding: 6px 9px; }
+    .tile .v { font-size: 15px; }
+    .stage-body { padding: 16px 14px 18px; }
+    ol, ul { padding-left: 20px; }
+    li { margin-bottom: 9px; }
+    .two-col { gap: 18px; }
+    .callout { padding: 11px 12px; gap: 9px; }
+    .callout p { font-size: 14px; }
+
+    /* charts */
+    .charts { gap: 20px; }
+    .track-row, .axis-row { grid-template-columns: 72px 1fr; gap: 8px; }
+    .track-lbl { font-size: 11.5px; }
+    .vlab { font-size: 11px; }
+    .axis span { font-size: 10px; }
+
+    /* checklist — bigger tap targets */
+    .chk-list label { padding: 10px 8px; font-size: 14.5px; gap: 12px; }
+    .chk-list input { width: 20px; height: 20px; margin-top: 1px; }
+    .progress-row { flex-wrap: wrap; }
+    .meter { max-width: none; }
+
+    footer.foot { flex-direction: column; gap: 4px; }
+  }
+
+  @media (max-width: 380px) {
+    .stack td { padding-left: 86px; }
+    .stack td::before { width: 80px; }
+    .track-row, .axis-row { grid-template-columns: 62px 1fr; }
+  }
+
   footer.foot {
     margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--border);
     font-size: 12px; color: var(--text-muted);
@@ -295,6 +417,20 @@
     <button id="themeBtn" type="button" data-zh="深色">Dark</button>
   </div>
 </header>
+
+<nav class="mnav" aria-label="Stages">
+  <div class="mnav-links">
+    <a href="#s1" style="--sc: var(--stage-1)" data-zh="1 打枝">1 Buck</a>
+    <a href="#s2" style="--sc: var(--stage-2)" data-zh="2 养护">2 Cure</a>
+    <a href="#s3" style="--sc: var(--stage-3)" data-zh="3 机器">3 Machine</a>
+    <a href="#s4" style="--sc: var(--stage-4)" data-zh="4 人工">4 Hand Trim</a>
+    <a href="#s5" style="--sc: var(--stage-5)" data-zh="5 分装">5 Pack</a>
+  </div>
+  <div class="controls">
+    <button id="langBtnM" class="primary" type="button">中文</button>
+  </div>
+</nav>
+
 
 <!-- ============ FLOW ============ -->
 <section class="panel">
@@ -339,7 +475,7 @@
 <!-- ============ ENV TABLE ============ -->
 <section class="panel">
   <h2 data-zh="环境参数速查 <span class=&quot;cnt&quot;>（下方图表的数据表）</span>">Environment quick reference <span class="cnt">(table view for the charts below)</span></h2>
-  <table>
+  <div class="tw"><table class="stack">
     <thead>
       <tr>
         <th data-zh="阶段">Stage</th>
@@ -352,47 +488,47 @@
     </thead>
     <tbody>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-1)"></span><span data-zh="打枝<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>在修剪间进行</small>">Bucking<br><small style="font-weight:400;color:var(--text-muted)">done in the Trim Room</small></span></td>
-        <td class="num">58–62°F <small style="color:var(--text-muted)">(14–17°C)</small></td>
-        <td class="num">55–60%</td>
-        <td data-zh="正常工作照明">Work lighting</td>
-        <td data-zh="按需">As needed</td>
-        <td data-zh="27 加仑料箱">27 gal tote</td>
+        <td class="room-cell" data-label-en="Stage" data-label-zh="阶段" data-label="Stage"><span class="swatch" style="background:var(--stage-1)"></span><span data-zh="打枝<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>在修剪间进行</small>">Bucking<br><small style="font-weight:400;color:var(--text-muted)">done in the Trim Room</small></span></td>
+        <td class="num" data-label-en="Temp" data-label-zh="温度" data-label="Temp">58–62°F <small style="color:var(--text-muted)">(14–17°C)</small></td>
+        <td class="num" data-label-en="Humidity" data-label-zh="相对湿度" data-label="Humidity">55–60%</td>
+        <td data-zh="正常工作照明" data-label-en="Lights" data-label-zh="灯光" data-label="Lights">Work lighting</td>
+        <td data-zh="按需" data-label-en="Duration" data-label-zh="时长" data-label="Duration">As needed</td>
+        <td data-zh="27 加仑料箱" data-label-en="Vessel" data-label-zh="容器" data-label="Vessel">27 gal tote</td>
       </tr>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-2)"></span><span data-zh="修剪前养护">Pre-Trim Curing</span></td>
-        <td class="num">60°F <small style="color:var(--text-muted)">(16°C)</small></td>
-        <td class="num">55%</td>
-        <td data-zh="关灯（全黑）"><strong>Lights off</strong></td>
-        <td data-zh="1–3 天（取决于含水量）">1–3 days <small style="color:var(--text-muted)">(moisture-driven)</small></td>
-        <td data-zh="54 加仑料箱（首选）">54 gal tote (ideal)</td>
+        <td class="room-cell" data-label-en="Stage" data-label-zh="阶段" data-label="Stage"><span class="swatch" style="background:var(--stage-2)"></span><span data-zh="修剪前养护">Pre-Trim Curing</span></td>
+        <td class="num" data-label-en="Temp" data-label-zh="温度" data-label="Temp">60°F <small style="color:var(--text-muted)">(16°C)</small></td>
+        <td class="num" data-label-en="Humidity" data-label-zh="相对湿度" data-label="Humidity">55%</td>
+        <td data-zh="关灯（全黑）" data-label-en="Lights" data-label-zh="灯光" data-label="Lights"><strong>Lights off</strong></td>
+        <td data-zh="1–3 天（取决于含水量）" data-label-en="Duration" data-label-zh="时长" data-label="Duration">1–3 days <small style="color:var(--text-muted)">(moisture-driven)</small></td>
+        <td data-zh="54 加仑料箱（首选）" data-label-en="Vessel" data-label-zh="容器" data-label="Vessel">54 gal tote (ideal)</td>
       </tr>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-3)"></span><span data-zh="机器修剪<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>由 Rob 操作</small>">Machine Trimming<br><small style="font-weight:400;color:var(--text-muted)">run by Rob</small></span></td>
-        <td class="num">60°F <small style="color:var(--text-muted)">(16°C)</small></td>
-        <td class="num">55%</td>
-        <td data-zh="正常工作照明">Work lighting</td>
-        <td data-zh="养护达标后开始">Starts when cure is ready</td>
-        <td data-zh="待定">TBD</td>
+        <td class="room-cell" data-label-en="Stage" data-label-zh="阶段" data-label="Stage"><span class="swatch" style="background:var(--stage-3)"></span><span data-zh="机器修剪<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>由 Rob 操作</small>">Machine Trimming<br><small style="font-weight:400;color:var(--text-muted)">run by Rob</small></span></td>
+        <td class="num" data-label-en="Temp" data-label-zh="温度" data-label="Temp">60°F <small style="color:var(--text-muted)">(16°C)</small></td>
+        <td class="num" data-label-en="Humidity" data-label-zh="相对湿度" data-label="Humidity">55%</td>
+        <td data-zh="正常工作照明" data-label-en="Lights" data-label-zh="灯光" data-label="Lights">Work lighting</td>
+        <td data-zh="养护达标后开始" data-label-en="Duration" data-label-zh="时长" data-label="Duration">Starts when cure is ready</td>
+        <td data-zh="待定" data-label-en="Vessel" data-label-zh="容器" data-label="Vessel">TBD</td>
       </tr>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-4)"></span><span data-zh="人工修剪与品控分级<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>阿姨们</small>">Hand Trim &amp; QC Grading<br><small style="font-weight:400;color:var(--text-muted)">the aunties</small></span></td>
-        <td class="num">60–62°F <small style="color:var(--text-muted)">(16–17°C)</small></td>
-        <td class="num">55–58%</td>
-        <td data-zh="仅工作照明——成品花避光">Work lighting only</td>
-        <td data-zh="按需">As needed</td>
-        <td data-zh="带盖料箱 → 火鸡袋">Lidded tote → turkey bag</td>
+        <td class="room-cell" data-label-en="Stage" data-label-zh="阶段" data-label="Stage"><span class="swatch" style="background:var(--stage-4)"></span><span data-zh="人工修剪与品控分级<br><small style=&quot;font-weight:400;color:var(--text-muted)&quot;>阿姨们</small>">Hand Trim &amp; QC Grading<br><small style="font-weight:400;color:var(--text-muted)">the aunties</small></span></td>
+        <td class="num" data-label-en="Temp" data-label-zh="温度" data-label="Temp">60–62°F <small style="color:var(--text-muted)">(16–17°C)</small></td>
+        <td class="num" data-label-en="Humidity" data-label-zh="相对湿度" data-label="Humidity">55–58%</td>
+        <td data-zh="仅工作照明——成品花避光" data-label-en="Lights" data-label-zh="灯光" data-label="Lights">Work lighting only</td>
+        <td data-zh="按需" data-label-en="Duration" data-label-zh="时长" data-label="Duration">As needed</td>
+        <td data-zh="带盖料箱 → 火鸡袋" data-label-en="Vessel" data-label-zh="容器" data-label="Vessel">Lidded tote → turkey bag</td>
       </tr>
       <tr>
-        <td class="room-cell"><span class="swatch" style="background:var(--stage-5)"></span><span data-zh="分装／储存">Packaging / Storage</span></td>
-        <td class="num">55°F <small style="color:var(--text-muted)">(13°C)</small></td>
-        <td class="num">50%</td>
-        <td data-zh="全黑（料箱加盖）">Dark (lidded totes)</td>
-        <td data-zh="长期">Long-term</td>
-        <td data-zh="折叠袋口的火鸡袋装入带盖料箱">Folded (not tied) turkey bags in lidded totes</td>
+        <td class="room-cell" data-label-en="Stage" data-label-zh="阶段" data-label="Stage"><span class="swatch" style="background:var(--stage-5)"></span><span data-zh="分装／储存">Packaging / Storage</span></td>
+        <td class="num" data-label-en="Temp" data-label-zh="温度" data-label="Temp">55°F <small style="color:var(--text-muted)">(13°C)</small></td>
+        <td class="num" data-label-en="Humidity" data-label-zh="相对湿度" data-label="Humidity">50%</td>
+        <td data-zh="全黑（料箱加盖）" data-label-en="Lights" data-label-zh="灯光" data-label="Lights">Dark (lidded totes)</td>
+        <td data-zh="长期" data-label-en="Duration" data-label-zh="时长" data-label="Duration">Long-term</td>
+        <td data-zh="折叠袋口的火鸡袋装入带盖料箱" data-label-en="Vessel" data-label-zh="容器" data-label="Vessel">Folded (not tied) turkey bags in lidded totes</td>
       </tr>
     </tbody>
-  </table>
+  </table></div>
 </section>
 
 <!-- ============ RANGE CHARTS ============ -->
@@ -413,7 +549,7 @@
 </section>
 
 <!-- ============ STAGE 1 ============ -->
-<article class="stage" style="--sc: var(--stage-1)">
+<article class="stage" id="s1" style="--sc: var(--stage-1)">
   <div class="stage-head">
     <div class="stage-num lite">1</div>
     <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="打枝">Bucking</h2>
@@ -448,7 +584,7 @@
       </div>
     </div>
     <h3 data-zh="料箱与重量对照">Tote &amp; weight reference</h3>
-    <table>
+    <div class="tw"><table class="stack">
       <thead>
         <tr>
           <th data-zh="容器">Vessel</th>
@@ -459,24 +595,24 @@
       </thead>
       <tbody>
         <tr>
-          <td data-zh="27 加仑料箱">27 gal tote</td>
-          <td class="num" data-zh="6–7 磅（上限）">6–7 lb max</td>
-          <td class="num" data-zh="9–10 磅">9–10 lb</td>
-          <td data-zh="打枝后入养护；养护后称重分装">Bucked flower into cure; weigh-out after cure</td>
+          <td data-zh="27 加仑料箱" data-label-en="Vessel" data-label-zh="容器" data-label="Vessel">27 gal tote</td>
+          <td class="num" data-zh="6–7 磅（上限）" data-label-en="During cure" data-label-zh="养护期间" data-label="During cure">6–7 lb max</td>
+          <td class="num" data-zh="9–10 磅" data-label-en="After cure" data-label-zh="养护之后" data-label="After cure">9–10 lb</td>
+          <td data-zh="打枝后入养护；养护后称重分装" data-label-en="Best use" data-label-zh="最佳用途" data-label="Best use">Bucked flower into cure; weigh-out after cure</td>
         </tr>
         <tr>
-          <td data-zh="54 加仑料箱">54 gal tote</td>
-          <td class="num" data-zh="12–14 磅">12–14 lb</td>
-          <td class="num">—</td>
-          <td data-zh="理想养护容器——表面积最大、深度最浅">Ideal cure vessel — max surface area, least depth</td>
+          <td data-zh="54 加仑料箱" data-label-en="Vessel" data-label-zh="容器" data-label="Vessel">54 gal tote</td>
+          <td class="num" data-zh="12–14 磅" data-label-en="During cure" data-label-zh="养护期间" data-label="During cure">12–14 lb</td>
+          <td class="num" data-label-en="After cure" data-label-zh="养护之后" data-label="After cure">—</td>
+          <td data-zh="理想养护容器——表面积最大、深度最浅" data-label-en="Best use" data-label-zh="最佳用途" data-label="Best use">Ideal cure vessel — max surface area, least depth</td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
   </div>
 </article>
 
 <!-- ============ STAGE 2 ============ -->
-<article class="stage" style="--sc: var(--stage-2)">
+<article class="stage" id="s2" style="--sc: var(--stage-2)">
   <div class="stage-head">
     <div class="stage-num">2</div>
     <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="修剪前养护">Pre-Trim Curing</h2>
@@ -529,7 +665,7 @@
 </article>
 
 <!-- ============ STAGE 3 — MACHINE TRIMMING ============ -->
-<article class="stage" style="--sc: var(--stage-3)">
+<article class="stage" id="s3" style="--sc: var(--stage-3)">
   <div class="stage-head">
     <div class="stage-num">3</div>
     <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="机器修剪">Machine Trimming</h2>
@@ -560,7 +696,7 @@
 </article>
 
 <!-- ============ STAGE 4 — TRIM / QC ============ -->
-<article class="stage" style="--sc: var(--stage-4)">
+<article class="stage" id="s4" style="--sc: var(--stage-4)">
   <div class="stage-head">
     <div class="stage-num">4</div>
     <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="人工修剪与品控分级">Hand Trim &amp; QC Grading</h2>
@@ -601,7 +737,7 @@
       <li data-zh="唯一多出来的成本：B／C 那一箱要多称一次重。">The only added cost: one extra weigh-in for the B/C bin.</li>
     </ul>
     <h3 data-zh="分级标准">Grades</h3>
-    <table>
+    <div class="tw"><table class="stack">
       <thead>
         <tr>
           <th data-zh="等级">Grade</th>
@@ -610,11 +746,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td class="num"><strong>A</strong></td><td data-zh="大花">A grade</td><td data-zh="最大的花苞">The biggest flower nugs</td></tr>
-        <tr><td class="num"><strong>B</strong></td><td><strong data-zh="小花">Smalls</strong></td><td data-zh="中等大小的花苞">Medium-sized nugs</td></tr>
-        <tr><td class="num"><strong>C</strong></td><td><strong data-zh="微花">Micros</strong></td><td data-zh="极小的花苞">Very small flower nugs</td></tr>
+        <tr><td class="num" data-label-en="Grade" data-label-zh="等级" data-label="Grade"><strong>A</strong></td><td data-zh="大花" data-label-en="Called" data-label-zh="叫法" data-label="Called">A grade</td><td data-zh="最大的花苞" data-label-en="What it is" data-label-zh="内容" data-label="What it is">The biggest flower nugs</td></tr>
+        <tr><td class="num" data-label-en="Grade" data-label-zh="等级" data-label="Grade"><strong>B</strong></td><td data-label-en="Called" data-label-zh="叫法" data-label="Called"><strong data-zh="小花">Smalls</strong></td><td data-zh="中等大小的花苞" data-label-en="What it is" data-label-zh="内容" data-label="What it is">Medium-sized nugs</td></tr>
+        <tr><td class="num" data-label-en="Grade" data-label-zh="等级" data-label="Grade"><strong>C</strong></td><td data-label-en="Called" data-label-zh="叫法" data-label="Called"><strong data-zh="微花">Micros</strong></td><td data-zh="极小的花苞" data-label-en="What it is" data-label-zh="内容" data-label="What it is">Very small flower nugs</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p style="font-size:12.5px;color:var(--text-secondary);margin:10px 0 16px" data-zh="在人工修剪环节只需挑出 <strong>A 级</strong>；B 与 C 合在一起，之后在筛盘上分开。">At hand trim only the <strong>A</strong> grade is separated. B and C are split later on the sifting tray.</p>
     <div class="callout crit">
       <span class="ico">▲</span>
@@ -647,7 +783,7 @@
 </article>
 
 <!-- ============ STAGE 5 — STORAGE ============ -->
-<article class="stage" style="--sc: var(--stage-5)">
+<article class="stage" id="s5" style="--sc: var(--stage-5)">
   <div class="stage-head">
     <div class="stage-num">5</div>
     <h2 class="stage-name" style="text-transform:none;letter-spacing:0;color:var(--text-primary)" data-zh="分装／储存">Packaging / Storage</h2>
@@ -745,7 +881,8 @@
 <!-- ============ LOG ============ -->
 <section class="panel">
   <h2 data-zh="每日养护记录表">Daily cure log</h2>
-  <table class="log-table">
+  <p class="scroll-hint" data-zh="← 左右滑动查看全部列 →">← swipe sideways to see all columns →</p>
+  <div class="tw"><table class="log-table">
     <thead>
       <tr>
         <th data-zh="日期">Date</th>
@@ -761,7 +898,7 @@
       </tr>
     </thead>
     <tbody id="logBody"></tbody>
-  </table>
+  </table></div>
   <div style="margin-top:14px" class="controls">
     <button id="addRowBtn" type="button" data-zh="＋ 添加一行">+ Add row</button>
   </div>
@@ -782,7 +919,8 @@
   var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-zh]"));
   nodes.forEach(function (el) { el.setAttribute("data-en", el.innerHTML); });
   var lang = "en";
-  var langBtn = document.getElementById("langBtn");
+  var langBtns = [document.getElementById("langBtn"), document.getElementById("langBtnM")];
+  var labelled = Array.prototype.slice.call(document.querySelectorAll("[data-label-en]"));
 
   function applyLang(next) {
     lang = next;
@@ -791,13 +929,22 @@
       if (v !== null && v !== "") el.innerHTML = v;
       if (lang === "zh" && el.getAttribute("data-zh") === "") el.innerHTML = "";
     });
+    // stacked-table row labels (shown via CSS ::before on phones)
+    labelled.forEach(function (el) {
+      el.setAttribute("data-label", el.getAttribute(lang === "zh" ? "data-label-zh" : "data-label-en") || "");
+    });
     document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
-    langBtn.textContent = lang === "zh" ? "English" : "中文";
-    langBtn.setAttribute("aria-label", lang === "zh" ? "Switch to English" : "切换到中文");
+    langBtns.forEach(function (btn) {
+      if (!btn) return;
+      btn.textContent = lang === "zh" ? "English" : "中文";
+      btn.setAttribute("aria-label", lang === "zh" ? "Switch to English" : "切换到中文");
+    });
     drawCharts();
     updateProgress();
   }
-  langBtn.addEventListener("click", function () { applyLang(lang === "en" ? "zh" : "en"); });
+  langBtns.forEach(function (btn) {
+    if (btn) btn.addEventListener("click", function () { applyLang(lang === "en" ? "zh" : "en"); });
+  });
 
   var T = {
     en: { room: "Room", target: "Target", range: "Acceptable range", single: "Target value", temp: "Temperature", rh: "Relative humidity", of: function (a, b) { return a + " of " + b + " complete"; } },
@@ -806,13 +953,17 @@
   function t(k) { return T[lang][k]; }
 
   /* ---------------- theme toggle ---------------- */
-  var themeBtn = document.getElementById("themeBtn");
-  themeBtn.addEventListener("click", function () {
-    var dark = document.documentElement.getAttribute("data-theme") === "dark";
-    document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
-    themeBtn.setAttribute("data-en", dark ? "Dark" : "Light");
-    themeBtn.setAttribute("data-zh", dark ? "深色" : "浅色");
-    themeBtn.innerHTML = themeBtn.getAttribute(lang === "zh" ? "data-zh" : "data-en");
+  var themeBtns = [document.getElementById("themeBtn"), document.getElementById("themeBtnM")].filter(Boolean);
+  themeBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var dark = document.documentElement.getAttribute("data-theme") === "dark";
+      document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+      themeBtns.forEach(function (b) {
+        b.setAttribute("data-en", dark ? "Dark" : "Light");
+        b.setAttribute("data-zh", dark ? "深色" : "浅色");
+        b.innerHTML = b.getAttribute(lang === "zh" ? "data-zh" : "data-en");
+      });
+    });
   });
 
 
@@ -822,7 +973,7 @@
     { en: "Pre-Trim Cure", zh: "修剪前养护", stage: 2, temp: [60, 60], rh: [55, 55] },
     { en: "Machine Trim", zh: "机器修剪", stage: 3, temp: [60, 60], rh: [55, 55] },
     { en: "Hand Trim", zh: "人工修剪", stage: 4, temp: [60, 62], rh: [55, 58] },
-    { en: "Packaging / Storage", zh: "分装／储存", stage: 5, temp: [55, 55], rh: [50, 50] }
+    { en: "Storage", zh: "储存", stage: 5, temp: [55, 55], rh: [50, 50] }
   ];
   var tip = document.getElementById("tip");
   function showTip(e, html) {
