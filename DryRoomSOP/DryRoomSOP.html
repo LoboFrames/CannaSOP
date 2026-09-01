@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>NLT Dry Room SOP · 干燥房标准作业程序</title>
+<style>
+/* ───────────────────────────────────────────────
+   NLT Dry Room SOP
+   Screen-only. No print stylesheet. No dependencies.
+   Semantic colour: amber = temperature, blue = humidity.
+   ─────────────────────────────────────────────── */
+
+:root{
+  --paper:#eceef0;
+  --surface:#ffffff;
+  --surface-2:#f4f6f7;
+  --ink:#191d22;
+  --ink-2:#4d565f;
+  --ink-3:#79838c;
+  --rule:#d5dade;
+  --rule-2:#e6eaec;
+
+  --temp:#b35309;
+  --temp-bg:#fdf1e5;
+  --rh:#15607d;
+  --rh-bg:#e6f1f5;
+
+  --p1:#7c4b9e;
+  --p2:#15607d;
+  --p3:#b35309;
+  --pe:#6b7480;
+
+  --pass:#1d6b3f;
+  --pass-bg:#e6f2ea;
+  --warn:#8a6100;
+  --warn-bg:#fbf2dc;
+  --fail:#9c2b2b;
+  --fail-bg:#f8e9e9;
+
+  --shadow:0 1px 2px rgba(20,30,40,.06), 0 6px 18px rgba(20,30,40,.05);
+  --radius:10px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  --safe-l:env(safe-area-inset-left,0px);
+  --safe-r:env(safe-area-inset-right,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#101317; --surface:#171b21; --surface-2:#1d222a;
+    --ink:#e4e8eb; --ink-2:#a6b0b9; --ink-3:#7c868f;
+    --rule:#2b3239; --rule-2:#232930;
+    --temp:#e08a3c; --temp-bg:#2a1e11;
+    --rh:#5cb0cd; --rh-bg:#12242c;
+    --p1:#b18ccd; --p2:#5cb0cd; --p3:#e08a3c; --pe:#8b95a1;
+    --pass:#5fbb85; --pass-bg:#12271b;
+    --warn:#d9ae4a; --warn-bg:#2a2311;
+    --fail:#e08585; --fail-bg:#2a1616;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.28);
+  }
+}
+body[data-theme="light"]{
+  --paper:#eceef0; --surface:#ffffff; --surface-2:#f4f6f7;
+  --ink:#191d22; --ink-2:#4d565f; --ink-3:#79838c;
+  --rule:#d5dade; --rule-2:#e6eaec;
+  --temp:#b35309; --temp-bg:#fdf1e5; --rh:#15607d; --rh-bg:#e6f1f5;
+  --p1:#7c4b9e; --p2:#15607d; --p3:#b35309; --pe:#6b7480;
+  --pass:#1d6b3f; --pass-bg:#e6f2ea; --warn:#8a6100; --warn-bg:#fbf2dc;
+  --fail:#9c2b2b; --fail-bg:#f8e9e9;
+  --shadow:0 1px 2px rgba(20,30,40,.06), 0 6px 18px rgba(20,30,40,.05);
+}
+body[data-theme="dark"]{
+  --paper:#101317; --surface:#171b21; --surface-2:#1d222a;
+  --ink:#e4e8eb; --ink-2:#a6b0b9; --ink-3:#7c868f;
+  --rule:#2b3239; --rule-2:#232930;
+  --temp:#e08a3c; --temp-bg:#2a1e11; --rh:#5cb0cd; --rh-bg:#12242c;
+  --p1:#b18ccd; --p2:#5cb0cd; --p3:#e08a3c; --pe:#8b95a1;
+  --pass:#5fbb85; --pass-bg:#12271b; --warn:#d9ae4a; --warn-bg:#2a2311;
+  --fail:#e08585; --fail-bg:#2a1616;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.28);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--font); font-size:16px; line-height:1.55;
+  font-variant-numeric:tabular-nums;
+  padding-left:var(--safe-l); padding-right:var(--safe-r);
+}
+.zh,.en{display:inline}
+body.lang-zh .en{display:none}
+body:not(.lang-zh) .zh{display:none}
+body.lang-zh{line-height:1.7}
+
+.wrap{max-width:940px;margin:0 auto;padding:0 18px 72px}
+
+/* ── Header ─────────────────────────────────── */
+.masthead{padding:34px 0 22px;border-bottom:1px solid var(--rule)}
+.mast-row{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.mast-id{font-size:12.5px;letter-spacing:.06em;color:var(--ink-3);margin-bottom:9px}
+h1{font-size:31px;line-height:1.15;margin:0 0 8px;font-weight:640;letter-spacing:-.018em}
+.mast-sub{color:var(--ink-2);font-size:15px;margin:0;max-width:56ch}
+.ctl{display:flex;gap:7px;flex-shrink:0}
+.btn{
+  font:inherit;font-size:13.5px;font-weight:550;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--rule);border-radius:7px;
+  padding:7px 13px;cursor:pointer;line-height:1.3;
+}
+.btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--rh);outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ── Batch identity strip ───────────────────── */
+.batch{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule-2);border:1px solid var(--rule);border-radius:var(--radius);
+  overflow:hidden;margin:22px 0 0;
+}
+.batch label{display:block;background:var(--surface);padding:11px 14px}
+.batch span{display:block;font-size:11.5px;color:var(--ink-3);margin-bottom:3px}
+.batch input{font:inherit;font-size:16px;width:100%;border:0;background:transparent;color:var(--ink);padding:0}
+.batch input:focus{outline:none;color:var(--rh)}
+
+/* ── Cycle strip (hero) ─────────────────────── */
+.cycle{margin:30px 0 0}
+.cycle-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+.cycle-title{font-size:13px;font-weight:600;color:var(--ink-2)}
+.cycle-note{font-size:12.5px;color:var(--ink-3)}
+.days{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
+.day{
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:8px 3px 9px;text-align:center;position:relative;box-shadow:var(--shadow);
+}
+.day .dow{font-size:9.5px;color:var(--ink-3);letter-spacing:.02em}
+.day .n{font-size:18px;font-weight:640;line-height:1.25;margin:1px 0 5px}
+.day .bar{height:3px;border-radius:2px;margin:0 auto;width:74%}
+.day.ph1 .bar{background:var(--p1)} .day.ph1 .n{color:var(--p1)}
+.day.ph2 .bar{background:var(--p2)} .day.ph2 .n{color:var(--p2)}
+.day.ph3 .bar{background:var(--p3)} .day.ph3 .n{color:var(--p3)}
+.day.phe{border-style:dashed;background:var(--surface-2)}
+.day.phe .bar{background:var(--pe)} .day.phe .n{color:var(--pe)}
+.day.gate{border-style:solid;border-color:var(--ink);border-width:1.5px}
+.day.stop{border-color:var(--fail);border-width:1.5px;border-style:solid}
+.day .flag{display:block;font-size:9px;font-weight:650;margin-top:5px;color:var(--ink);line-height:1.2}
+.day.stop .flag{color:var(--fail)}
+.cycle-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:13px;font-size:12.5px;color:var(--ink-2)}
+.cycle-legend i{display:inline-block;width:11px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+
+/* ── Sticky mobile bar ──────────────────────── */
+.stickybar{display:none}
+
+/* ── Sections ───────────────────────────────── */
+section{margin:44px 0 0;scroll-margin-top:24px}
+h2{
+  font-size:12.5px;font-weight:650;letter-spacing:.05em;color:var(--ink-3);
+  margin:0 0 14px;padding-bottom:9px;border-bottom:1px solid var(--rule);
+}
+h3{font-size:17.5px;font-weight:620;margin:0 0 7px;letter-spacing:-.01em}
+p{margin:0 0 12px;max-width:72ch}
+.lede{color:var(--ink-2);font-size:15.5px}
+strong{font-weight:640}
+
+.card{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:18px 20px;box-shadow:var(--shadow);margin-bottom:14px;
+}
+.card:last-child{margin-bottom:0}
+.card.ext{border-style:dashed}
+.card-top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:11px}
+.tag{font-size:11.5px;font-weight:650;padding:3px 9px;border-radius:20px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.tag.t1{background:color-mix(in srgb,var(--p1) 13%,transparent);color:var(--p1)}
+.tag.t2{background:color-mix(in srgb,var(--p2) 13%,transparent);color:var(--p2)}
+.tag.t3{background:color-mix(in srgb,var(--p3) 13%,transparent);color:var(--p3)}
+.tag.te{background:color-mix(in srgb,var(--pe) 15%,transparent);color:var(--pe)}
+.tag.pass{background:var(--pass-bg);color:var(--pass)}
+.tag.warn{background:var(--warn-bg);color:var(--warn)}
+.tag.fail{background:var(--fail-bg);color:var(--fail)}
+
+.setpoints{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 13px}
+.sp{border:1px solid var(--rule);border-radius:7px;padding:7px 12px;background:var(--surface-2);font-size:13px;color:var(--ink-2)}
+.sp b{display:block;font-size:19px;font-weight:640;letter-spacing:-.01em;line-height:1.2}
+.sp.temp b{color:var(--temp)} .sp.rh b{color:var(--rh)}
+
+ul{margin:0 0 12px;padding-left:20px}
+li{margin-bottom:6px;max-width:70ch}
+li:last-child{margin-bottom:0}
+
+.callout{
+  border-left:3px solid var(--ink);background:var(--surface-2);
+  padding:13px 16px;border-radius:0 7px 7px 0;margin:0 0 13px;font-size:15px;
+}
+.callout:last-child{margin-bottom:0}
+.callout.crit{border-left-color:var(--fail);background:var(--fail-bg)}
+.callout.watch{border-left-color:var(--warn);background:var(--warn-bg)}
+.callout .lbl{display:block;font-size:11.5px;font-weight:650;margin-bottom:4px;color:var(--ink-2)}
+.callout.crit .lbl{color:var(--fail)}
+.callout.watch .lbl{color:var(--warn)}
+
+/* ── Fork ───────────────────────────────────── */
+.fork{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 13px}
+.fork > div{border:1px solid var(--rule);border-radius:var(--radius);padding:15px 17px;background:var(--surface)}
+.fork .route-b{border-style:dashed;background:var(--surface-2)}
+.fork h4{margin:0 0 6px;font-size:15.5px;font-weight:640}
+.fork p{margin:0;font-size:14.5px;color:var(--ink-2);max-width:none}
+.fork .rt{display:inline-block;font-size:11px;font-weight:650;padding:2px 8px;border-radius:14px;margin-bottom:7px}
+.fork .route-a .rt{background:var(--pass-bg);color:var(--pass)}
+.fork .route-b .rt{background:var(--warn-bg);color:var(--warn)}
+
+/* ── Tables ─────────────────────────────────── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 13px;border-radius:var(--radius)}
+table{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--surface)}
+th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--rule-2);vertical-align:top}
+thead th{font-size:11.5px;font-weight:650;color:var(--ink-3);letter-spacing:.03em;background:var(--surface-2);border-bottom:1px solid var(--rule);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+.swipe{display:none}
+
+/* ── Chart ──────────────────────────────────── */
+.chart{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 14px 10px;box-shadow:var(--shadow);margin-bottom:13px}
+.chart svg{display:block;width:100%;height:auto}
+.chart .ax{font-size:10px;fill:var(--ink-3)}
+.chart .gl{stroke:var(--rule-2);stroke-width:1}
+.chart .lbl{font-size:10.5px;font-weight:650}
+.chart-key{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin-top:8px;padding-left:2px}
+.chart-key i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+
+/* ── Checklist ──────────────────────────────── */
+.checks{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.check{display:flex;gap:12px;padding:13px 16px;border-bottom:1px solid var(--rule-2);cursor:pointer;align-items:flex-start}
+.check:last-of-type{border-bottom:0}
+.check input{
+  appearance:none;-webkit-appearance:none;flex:0 0 auto;
+  width:21px;height:21px;margin:1px 0 0;border:1.5px solid var(--rule);
+  border-radius:5px;background:var(--surface);cursor:pointer;position:relative;
+}
+.check input:checked{background:var(--pass);border-color:var(--pass)}
+.check input:checked::after{
+  content:"";position:absolute;left:6.5px;top:2.5px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg);
+}
+.check input:focus-visible{outline:2px solid var(--rh);outline-offset:2px}
+.check span{font-size:15px;line-height:1.45}
+.check input:checked+span{color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:1px}
+.checks-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 16px;background:var(--surface-2);border-top:1px solid var(--rule);font-size:13px;color:var(--ink-2)}
+
+/* ── Sign-off ───────────────────────────────── */
+.sign{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule-2);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden}
+.sign label{display:block;background:var(--surface);padding:13px 16px}
+.sign span{display:block;font-size:11.5px;color:var(--ink-3);margin-bottom:4px}
+.sign input{font:inherit;font-size:16px;width:100%;border:0;border-bottom:1px solid var(--rule);background:transparent;color:var(--ink);padding:3px 0}
+.sign input:focus{outline:none;border-bottom-color:var(--rh)}
+
+footer{margin:52px 0 0;padding-top:18px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--ink-3)}
+footer p{max-width:none;margin:0 0 5px}
+
+/* ── Mobile ─────────────────────────────────── */
+@media (max-width:700px){
+  .wrap{padding:0 14px 60px}
+  .masthead{padding:22px 0 18px}
+  h1{font-size:25px}
+  .mast-sub{font-size:14.5px}
+  .ctl{display:none}
+
+  .stickybar{
+    display:block;position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb,var(--paper) 92%,transparent);
+    -webkit-backdrop-filter:saturate(180%) blur(12px);
+    backdrop-filter:saturate(180%) blur(12px);
+    border-bottom:1px solid var(--rule);
+    padding-top:var(--safe-t);margin:0 -14px;
+  }
+  .pills{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:9px 14px;scrollbar-width:none}
+  .pills::-webkit-scrollbar{display:none}
+  .pill{
+    flex:0 0 auto;font:inherit;font-size:13px;font-weight:600;
+    background:var(--surface);border:1px solid var(--rule);color:var(--ink-2);
+    border-radius:16px;padding:6px 13px;cursor:pointer;text-decoration:none;white-space:nowrap;
+  }
+  .pill.lang{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+  .batch{grid-template-columns:1fr}
+  .days{grid-template-columns:repeat(4,1fr);gap:6px}
+  .day{padding:9px 4px 10px}
+  .day .n{font-size:19px}
+  .day .dow{font-size:10.5px}
+  .day .flag{font-size:9.5px}
+  section{margin:34px 0 0;scroll-margin-top:60px}
+  .card{padding:15px 16px}
+  p,li{max-width:none}
+  .sign{grid-template-columns:1fr}
+  .fork{grid-template-columns:1fr}
+
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack thead{display:none}
+  table.stack{background:transparent}
+  table.stack tr{
+    background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+    margin-bottom:9px;padding:4px 0;box-shadow:var(--shadow);
+  }
+  table.stack tr:last-child{margin-bottom:0}
+  table.stack td{
+    border-bottom:1px solid var(--rule-2);padding:8px 15px;
+    display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;
+  }
+  table.stack tr td:last-child{border-bottom:0}
+  table.stack td::before{content:attr(data-label);font-size:11.5px;font-weight:650;color:var(--ink-3);white-space:nowrap}
+  table.stack td.lead{display:block;font-size:16px;font-weight:640;padding-top:11px;padding-bottom:9px;background:var(--surface-2)}
+  table.stack td.lead::before{display:none}
+
+  .swipe{display:block;font-size:11.5px;color:var(--ink-3);margin:-6px 0 13px;padding-left:2px}
+  .chart{padding:13px 6px 8px}
+}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body class="lang-en">
+
+<nav class="stickybar" aria-label="Section navigation">
+  <div class="pills">
+    <button class="pill lang" id="langPill" type="button">中文</button>
+    <a class="pill" href="#cycle"><span class="en">Cycle</span><span class="zh">周期</span></a>
+    <a class="pill" href="#load"><span class="en">Load</span><span class="zh">装载评估</span></a>
+    <a class="pill" href="#env"><span class="en">Environment</span><span class="zh">环境</span></a>
+    <a class="pill" href="#phases"><span class="en">Phases</span><span class="zh">阶段</span></a>
+    <a class="pill" href="#day5"><span class="en">Day 5</span><span class="zh">第5天</span></a>
+    <a class="pill" href="#day7"><span class="en">Day 7</span><span class="zh">第7天</span></a>
+    <a class="pill" href="#gate"><span class="en">Gate</span><span class="zh">判定</span></a>
+    <a class="pill" href="#ext"><span class="en">Extension</span><span class="zh">延长</span></a>
+    <a class="pill" href="#daily"><span class="en">Daily</span><span class="zh">每日</span></a>
+    <a class="pill" href="#handoff"><span class="en">Handoff</span><span class="zh">交接</span></a>
+    <a class="pill" href="#trouble"><span class="en">Troubleshooting</span><span class="zh">故障排除</span></a>
+    <a class="pill" href="#signoff"><span class="en">Sign-off</span><span class="zh">签核</span></a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="mast-row">
+    <div>
+      <div class="mast-id"><span class="en">NLT · Post-Harvest · Upstream of the Post-Processing SOP</span><span class="zh">NLT · 采后 · 后处理 SOP 上游流程</span></div>
+      <h1><span class="en">Dry Room Operation &amp; Debucking Readiness</span><span class="zh">干燥房作业与下架摘花准备</span></h1>
+      <p class="mast-sub">
+        <span class="en">Harvest Monday. Day 8 is the target, Day 12 is the outer bound.</span>
+        <span class="zh">周一采收。第8天为目标，第12天为最终期限。</span>
+      </p>
+    </div>
+    <div class="ctl">
+      <button class="btn" id="langBtn" type="button">中文</button>
+      <button class="btn" id="themeBtn" type="button" aria-pressed="false"><span class="en">Theme</span><span class="zh">主题</span></button>
+    </div>
+  </div>
+
+  <div class="batch">
+    <label><span><span class="en">Harvested rooms</span><span class="zh">采收房间</span></span><input type="text" placeholder="—" autocomplete="off"></label>
+    <label><span><span class="en">Harvest date (Mon)</span><span class="zh">采收日期（周一）</span></span><input type="text" placeholder="—" autocomplete="off"></label>
+    <label><span><span class="en">Track — Standard / Heavy</span><span class="zh">路径——标准／重载</span></span><input type="text" placeholder="—" autocomplete="off"></label>
+    <label><span><span class="en">Actual takedown</span><span class="zh">实际下架日期</span></span><input type="text" placeholder="—" autocomplete="off"></label>
+  </div>
+</header>
+
+<!-- ── CYCLE STRIP ─────────────────────────── -->
+<section id="cycle" class="cycle">
+  <div class="cycle-head">
+    <div class="cycle-title"><span class="en">The cycle — Day 8 target, Day 12 outer bound</span><span class="zh">周期——第8天目标，第12天最终期限</span></div>
+    <div class="cycle-note"><span class="en">Days 9–12 are contingency, not schedule</span><span class="zh">第9–12天为应急，非常规排程</span></div>
+  </div>
+  <div class="days">
+    <div class="day ph1"><div class="dow"><span class="en">Mon</span><span class="zh">一</span></div><div class="n">1</div><div class="bar"></div></div>
+    <div class="day ph1"><div class="dow"><span class="en">Tue</span><span class="zh">二</span></div><div class="n">2</div><div class="bar"></div></div>
+    <div class="day ph1"><div class="dow"><span class="en">Wed</span><span class="zh">三</span></div><div class="n">3</div><div class="bar"></div></div>
+    <div class="day ph2"><div class="dow"><span class="en">Thu</span><span class="zh">四</span></div><div class="n">4</div><div class="bar"></div></div>
+    <div class="day ph2 gate"><div class="dow"><span class="en">Fri</span><span class="zh">五</span></div><div class="n">5</div><div class="bar"></div><span class="flag"><span class="en">Check</span><span class="zh">检查</span></span></div>
+    <div class="day ph2"><div class="dow"><span class="en">Sat</span><span class="zh">六</span></div><div class="n">6</div><div class="bar"></div></div>
+    <div class="day ph2 gate"><div class="dow"><span class="en">Sun</span><span class="zh">日</span></div><div class="n">7</div><div class="bar"></div><span class="flag"><span class="en">Route</span><span class="zh">分流</span></span></div>
+    <div class="day ph3 gate"><div class="dow"><span class="en">Mon</span><span class="zh">一</span></div><div class="n">8</div><div class="bar"></div><span class="flag"><span class="en">Target</span><span class="zh">目标</span></span></div>
+    <div class="day phe"><div class="dow"><span class="en">Tue</span><span class="zh">二</span></div><div class="n">9</div><div class="bar"></div></div>
+    <div class="day phe"><div class="dow"><span class="en">Wed</span><span class="zh">三</span></div><div class="n">10</div><div class="bar"></div></div>
+    <div class="day phe"><div class="dow"><span class="en">Thu</span><span class="zh">四</span></div><div class="n">11</div><div class="bar"></div></div>
+    <div class="day phe stop"><div class="dow"><span class="en">Fri</span><span class="zh">五</span></div><div class="n">12</div><div class="bar"></div><span class="flag"><span class="en">Escalate</span><span class="zh">上报</span></span></div>
+  </div>
+  <div class="cycle-legend">
+    <span><i style="background:var(--p1)"></i><span class="en">Initial drying</span><span class="zh">初始干燥</span></span>
+    <span><i style="background:var(--p2)"></i><span class="en">Controlled drying</span><span class="zh">控制干燥</span></span>
+    <span><i style="background:var(--p3)"></i><span class="en">Hold &amp; takedown</span><span class="zh">保持与下架</span></span>
+    <span><i style="background:var(--pe)"></i><span class="en">Extension</span><span class="zh">延长干燥</span></span>
+  </div>
+</section>
+
+<!-- ── HOW THE SCHEDULE WORKS ──────────────── -->
+<section id="how">
+  <h2><span class="en">How the schedule works</span><span class="zh">排程运作原理</span></h2>
+  <div class="card">
+    <p class="lede">
+      <span class="en"><strong>Day 8 is the target, not the deadline.</strong> Consistency is worth real money downstream — the trim room, Rob's machine schedule, and the aunties all plan around a Monday handoff.</span>
+      <span class="zh"><strong>第8天是目标，不是死线。</strong>一致性在下游意味着实实在在的效益——修剪房、Rob 的机器排期以及阿姨们都围绕周一交接安排工作。</span>
+    </p>
+    <p>
+      <span class="en"><strong>Day 12 is the outer bound.</strong> Some batches will not be ready on Day 8, and forcing them down wet is worse than extending. Drying rate is the water load in the room against the capacity to remove it, and both vary: plant count, wet weight, leaf load, whether the room was wet-trimmed, how many dehumidifiers are running, whether AC control is holding. <strong>Day 12 is not a forced takedown</strong> — it is where the call stops being the technician's and becomes a documented decision by the Lead and the Supervisor.</span>
+      <span class="zh"><strong>第12天是最终期限。</strong>有些批次到第8天不会达标，湿着强行下架比延长更糟。干燥速度取决于房间内的水分负荷与除湿能力之比，两者都会变化：株数、湿重、叶量、是否湿修、除湿机运行台数、空调控制是否稳定。<strong>第12天并非强制下架</strong>——而是该判断不再由技术员决定，转为由主管与上级主管共同作出并记录在案的决策。</span>
+    </p>
+    <div class="callout">
+      <span class="lbl"><span class="en">Most of that is knowable on Day 1</span><span class="zh">其中大部分在第1天就可预知</span></span>
+      <span class="en">Plant count, poundage, and leaf load are recorded at harvest. Dehumidifier count and AC status are known before the room is loaded. A heavy load should be predicted at intake, not discovered on Monday morning.</span>
+      <span class="zh">株数、重量和叶量在采收时已记录。除湿机数量与空调状态在装载前已知。重载批次应在入库时预判，而不是在周一早晨才发现。</span>
+    </div>
+    <div class="callout">
+      <span class="lbl"><span class="en">The target is a window, not a point</span><span class="zh">目标是区间，而非单点</span></span>
+      <span class="en">The Pre-Trim Cure downstream (1–3 days, moisture-driven) absorbs the remainder. The dry room needs to land inside the cure's entry window and hand off an accurate reading — not hit the final number.</span>
+      <span class="zh">下游预修剪熟化（1–3天，由含水量决定）会吸收剩余差异。干燥房只需落在熟化的入口区间内并准确传递读数，无需达到最终数值。</span>
+    </div>
+    <p style="margin-bottom:0">
+      <span class="en">The outer bound landing on Friday is convenient: a Day 12 takedown means bucking Friday, cure across the weekend, machine trim Monday. The cure absorbs the weekend either way.</span>
+      <span class="zh">最终期限落在周五很合适：第12天下架意味着周五摘花、周末熟化、周一机器修剪。无论哪条路径，熟化都能吸收周末时间。</span>
+    </p>
+  </div>
+</section>
+
+<!-- ── LOAD ASSESSMENT ─────────────────────── -->
+<section id="load">
+  <h2><span class="en">Load assessment — Day 1, at intake</span><span class="zh">装载量评估——第1天，入库时</span></h2>
+  <div class="card">
+    <p class="lede">
+      <span class="en">Recorded before or as the room is loaded. This is what sets the expected track.</span>
+      <span class="zh">在装载房间之前或期间记录。这决定了预期路径。</span>
+    </p>
+    <ul>
+      <li><span class="en">Number of plants and source rooms</span><span class="zh">株数与来源房间</span></li>
+      <li><span class="en">Estimated wet weight (lb)</span><span class="zh">预估湿重（磅）</span></li>
+      <li><span class="en">Leaf load — whole-plant / leaf-on, or wet-trimmed</span><span class="zh">叶量——整株带叶，或已湿修</span></li>
+      <li><span class="en">Number of portable dehumidifiers running, and their condition</span><span class="zh">运行中的移动除湿机数量及状态</span></li>
+      <li><span class="en">AC control status — holding, or known marginal</span><span class="zh">空调控制状态——稳定，或已知偏弱</span></li>
+      <li><span class="en">Hang density — full room, or partial</span><span class="zh">挂晾密度——满房，或部分</span></li>
+    </ul>
+
+    <div class="tw">
+      <table class="stack">
+        <thead>
+          <tr>
+            <th><span class="en">Track</span><span class="zh">路径</span></th>
+            <th><span class="en">Indicators</span><span class="zh">判定依据</span></th>
+            <th><span class="en">Expected takedown</span><span class="zh">预期下架</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lead" data-label-en="Track" data-label-zh="路径"><span class="tag pass"><span class="en">Standard</span><span class="zh">标准</span></span></td>
+            <td data-label-en="Indicators" data-label-zh="判定依据"><span class="en">Typical poundage for the room, dehumidification at full complement, AC holding, normal hang density</span><span class="zh">该房间常规重量，除湿机满配运行，空调稳定，挂晾密度正常</span></td>
+            <td data-label-en="Expected takedown" data-label-zh="预期下架"><span class="en">Day 8 (Mon)</span><span class="zh">第8天（周一）</span></td>
+          </tr>
+          <tr>
+            <td class="lead" data-label-en="Track" data-label-zh="路径"><span class="tag warn"><span class="en">Heavy</span><span class="zh">重载</span></span></td>
+            <td data-label-en="Indicators" data-label-zh="判定依据"><span class="en">High poundage, heavy leaf load, a dehumidifier down, marginal AC control, or a fully packed room</span><span class="zh">重量偏高、叶量大、有除湿机故障、空调控制偏弱，或房间完全塞满</span></td>
+            <td data-label-en="Expected takedown" data-label-zh="预期下架"><span class="en">Day 9–11, possibly Day 12</span><span class="zh">第9–11天，可能到第12天</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout crit">
+      <span class="lbl"><span class="en">A Heavy classification is communicated at intake, not at takedown</span><span class="zh">重载判定须在入库时通报，而非下架时</span></span>
+      <span class="en">Tell the trim room lead and Rob on Day 1 that this batch is tracking long. They schedule a week out; a Monday morning surprise costs the whole downstream chain a day.</span>
+      <span class="zh">在第1天就告知修剪房负责人和 Rob，该批次预计会延长。他们提前一周排班；周一早晨的意外会让整条下游链条损失一天。</span>
+    </div>
+    <div class="callout watch">
+      <span class="lbl"><span class="en">Room availability conflict</span><span class="zh">房间占用冲突</span></span>
+      <span class="en">Harvest runs weekly. An extension into Days 9–12 overlaps the next harvest's Days 1–5. A Heavy classification on Day 1 is also the earliest warning that next Monday's harvest may need somewhere else to hang, or may need to be split. Raise it with the Cultivation Lead at intake.</span>
+      <span class="zh">采收按周进行。延长至第9–12天会与下一批次的第1–5天重叠。第1天的重载判定同时也是最早的预警：下周一的采收可能需要另寻挂晾空间，或需要分批。请在入库时向种植主管提出。</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── ENVIRONMENT ─────────────────────────── -->
+<section id="env">
+  <h2><span class="en">Environment schedule</span><span class="zh">环境设定进度</span></h2>
+
+  <div class="chart">
+    <svg viewBox="0 0 730 300" role="img" aria-label="Temperature and humidity setpoints across the cycle, forking at Day 7 into a standard takedown or an extension">
+      <g class="gl">
+        <line x1="52" y1="26"  x2="676" y2="26"/>
+        <line x1="52" y1="72"  x2="676" y2="72"/>
+        <line x1="52" y1="118" x2="676" y2="118"/>
+        <line x1="52" y1="164" x2="676" y2="164"/>
+        <line x1="52" y1="210" x2="676" y2="210"/>
+      </g>
+      <g class="ax" text-anchor="end">
+        <text x="45" y="30">72°F</text><text x="45" y="76">69</text>
+        <text x="45" y="122">66</text><text x="45" y="168">63</text><text x="45" y="214">60</text>
+      </g>
+      <g class="ax" text-anchor="start">
+        <text x="684" y="30">60%</text><text x="684" y="76">45</text>
+        <text x="684" y="122">30</text><text x="684" y="168">15</text><text x="684" y="214">0</text>
+      </g>
+
+      <!-- Days 1-7 shared trunk -->
+      <polyline fill="none" stroke="var(--temp)" stroke-width="2.5" stroke-linejoin="round"
+        points="78,164 131,164 184,164 237,133 290,133 343,133 395,133"/>
+      <polyline fill="none" stroke="var(--rh)" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="7 4"
+        points="78,149 131,149 184,149 237,72 290,72 343,72 395,72"/>
+
+      <!-- Standard branch: Day 8 -->
+      <polyline fill="none" stroke="var(--temp)" stroke-width="2.5" points="395,133 448,57"/>
+      <polyline fill="none" stroke="var(--rh)" stroke-width="2.5" stroke-dasharray="7 4" points="395,72 448,41"/>
+      <circle cx="448" cy="57" r="4" fill="var(--temp)"/>
+      <circle cx="448" cy="41" r="4" fill="var(--rh)"/>
+
+      <!-- Extension branch: Days 8-12 -->
+      <polyline fill="none" stroke="var(--temp)" stroke-width="2.5" opacity=".42"
+        points="395,133 448,133 501,133 554,133 607,133 660,133"/>
+      <polyline fill="none" stroke="var(--rh)" stroke-width="2.5" stroke-dasharray="7 4" opacity=".42"
+        points="395,72 448,72 501,72 554,72 607,72 660,72"/>
+
+      <!-- fork marker -->
+      <circle cx="395" cy="133" r="4" fill="var(--temp)"/>
+      <circle cx="395" cy="72" r="4" fill="var(--rh)"/>
+      <line x1="395" y1="20" x2="395" y2="216" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+      <line x1="290" y1="20" x2="290" y2="216" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+      <line x1="660" y1="20" x2="660" y2="216" stroke="var(--fail)" stroke-width="1" stroke-dasharray="3 3"/>
+
+      <text class="ax" x="290" y="14" text-anchor="middle">D5</text>
+      <text class="ax" x="395" y="14" text-anchor="middle">D7</text>
+      <text class="ax" x="660" y="14" text-anchor="middle" fill="var(--fail)">D12</text>
+
+      <text class="lbl" x="454" y="34" fill="var(--ink-2)">Standard</text>
+      <text class="lbl" x="560" y="122" fill="var(--ink-3)" opacity=".85">Extension</text>
+
+      <line x1="52" y1="216" x2="676" y2="216" stroke="var(--rule)" stroke-width="1"/>
+      <g class="ax" text-anchor="middle">
+        <text x="78" y="234">1</text><text x="131" y="234">2</text><text x="184" y="234">3</text>
+        <text x="237" y="234">4</text><text x="290" y="234">5</text><text x="343" y="234">6</text>
+        <text x="395" y="234">7</text><text x="448" y="234">8</text><text x="501" y="234">9</text>
+        <text x="554" y="234">10</text><text x="607" y="234">11</text><text x="660" y="234">12</text>
+      </g>
+      <text class="ax" x="364" y="252" text-anchor="middle">Day / 天</text>
+      <text class="ax" x="364" y="272" text-anchor="middle" fill="var(--ink-3)">Day 7 routes the batch. Extension holds Phase 2 conditions. / 第7天分流。延长期维持第2阶段条件。</text>
+    </svg>
+    <div class="chart-key">
+      <span><i style="background:var(--temp)"></i><span class="en">Temperature setpoint</span><span class="zh">温度设定值</span></span>
+      <span><i style="background:var(--rh)"></i><span class="en">Humidity setpoint</span><span class="zh">湿度设定值</span></span>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table class="stack">
+      <thead>
+        <tr>
+          <th><span class="en">Phase</span><span class="zh">阶段</span></th>
+          <th><span class="en">Days</span><span class="zh">天数</span></th>
+          <th><span class="en">Temp</span><span class="zh">温度</span></th>
+          <th><span class="en">RH</span><span class="zh">湿度</span></th>
+          <th><span class="en">Dehus</span><span class="zh">除湿机</span></th>
+          <th><span class="en">Air exchange</span><span class="zh">换气</span></th>
+          <th><span class="en">Lights</span><span class="zh">灯光</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="lead" data-label-en="Phase" data-label-zh="阶段"><span class="en">1 — Initial drying</span><span class="zh">1 — 初始干燥</span></td>
+          <td data-label-en="Days" data-label-zh="天数"><span class="en">1–3 · Mon–Wed</span><span class="zh">1–3 · 周一至周三</span></td>
+          <td data-label-en="Temp" data-label-zh="温度">63°F</td>
+          <td data-label-en="RH" data-label-zh="湿度">20%</td>
+          <td data-label-en="Dehus" data-label-zh="除湿机">20%</td>
+          <td data-label-en="Air exchange" data-label-zh="换气"><span class="en">Intake + exhaust, continuous</span><span class="zh">进气与排气，持续运行</span></td>
+          <td data-label-en="Lights" data-label-zh="灯光"><span class="en">Off</span><span class="zh">关闭</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Phase" data-label-zh="阶段"><span class="en">2 — Controlled drying</span><span class="zh">2 — 控制干燥</span></td>
+          <td data-label-en="Days" data-label-zh="天数"><span class="en">4–7 · Thu–Sun</span><span class="zh">4–7 · 周四至周日</span></td>
+          <td data-label-en="Temp" data-label-zh="温度">65°F</td>
+          <td data-label-en="RH" data-label-zh="湿度">45%</td>
+          <td data-label-en="Dehus" data-label-zh="除湿机">45%</td>
+          <td data-label-en="Air exchange" data-label-zh="换气"><span class="en">24 hours a day</span><span class="zh">全天24小时</span></td>
+          <td data-label-en="Lights" data-label-zh="灯光"><span class="en">Off</span><span class="zh">关闭</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Phase" data-label-zh="阶段"><span class="en">3 — Hold &amp; takedown</span><span class="zh">3 — 保持与下架</span></td>
+          <td data-label-en="Days" data-label-zh="天数"><span class="en">8 · Mon</span><span class="zh">8 · 周一</span></td>
+          <td data-label-en="Temp" data-label-zh="温度">70°F</td>
+          <td data-label-en="RH" data-label-zh="湿度">55%</td>
+          <td data-label-en="Dehus" data-label-zh="除湿机">55%</td>
+          <td data-label-en="Air exchange" data-label-zh="换气"><span class="en">24 hours a day</span><span class="zh">全天24小时</span></td>
+          <td data-label-en="Lights" data-label-zh="灯光"><span class="en">Off</span><span class="zh">关闭</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Phase" data-label-zh="阶段"><span class="en">E — Extension</span><span class="zh">E — 延长干燥</span></td>
+          <td data-label-en="Days" data-label-zh="天数"><span class="en">9–12 · Tue–Fri</span><span class="zh">9–12 · 周二至周五</span></td>
+          <td data-label-en="Temp" data-label-zh="温度">65°F</td>
+          <td data-label-en="RH" data-label-zh="湿度">45%</td>
+          <td data-label-en="Dehus" data-label-zh="除湿机">45%</td>
+          <td data-label-en="Air exchange" data-label-zh="换气"><span class="en">24 hours a day</span><span class="zh">全天24小时</span></td>
+          <td data-label-en="Lights" data-label-zh="灯光"><span class="en">Off</span><span class="zh">关闭</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout crit">
+    <span class="lbl"><span class="en">Extension holds Phase 2 conditions — it does not continue Phase 3</span><span class="zh">延长期维持第2阶段条件——不是延续第3阶段</span></span>
+    <span class="en">Phase 3 is a takedown-day hold; its job is to stop the flower drying while the crew works. Applying it to a batch that still needs to lose water stalls the dry and burns a day. If the Day 8 gate fails, the room goes back to 65°F / 45% the same morning.</span>
+    <span class="zh">第3阶段是下架当天的保持条件，作用是在作业期间阻止花继续失水。将其用于仍需失水的批次会停滞干燥、浪费一天。若第8天判定未通过，当天早晨即将房间调回 65°F / 45%。</span>
+  </div>
+
+  <div class="callout">
+    <span class="lbl"><span class="en">No fan points at hanging flower</span><span class="zh">风扇不得直吹挂晾的花</span></span>
+    <span class="en">Fans move air through the room; they do not blow on plants. Some facing up, some pushing across. Direct airflow dries the exterior faster than moisture can migrate out of the interior.</span>
+    <span class="zh">风扇的作用是让空气在房间内流动，而不是吹向植株。部分朝上，部分横向推动空气。直吹会使表面干燥速度快于内部水分迁移速度。</span>
+  </div>
+</section>
+
+<!-- ── PHASES ──────────────────────────────── -->
+<section id="phases">
+  <h2><span class="en">Phase detail</span><span class="zh">阶段详情</span></h2>
+
+  <div class="card">
+    <div class="card-top">
+      <span class="tag t1"><span class="en">Phase 1 · Days 1–3</span><span class="zh">第1阶段 · 第1–3天</span></span>
+      <h3><span class="en">Initial drying</span><span class="zh">初始干燥</span></h3>
+    </div>
+    <div class="setpoints">
+      <div class="sp temp"><b>63°F</b><span class="en">Room temperature</span><span class="zh">房间温度</span></div>
+      <div class="sp rh"><b>20%</b><span class="en">TrolMaster + portable dehus</span><span class="zh">TrolMaster 与移动除湿机</span></div>
+    </div>
+    <ul>
+      <li><span class="en">Set room temperature to 63°F on the TrolMaster.</span><span class="zh">在 TrolMaster 上将房间温度设为 63°F。</span></li>
+      <li><span class="en">Set TrolMaster humidity to 20% and every portable dehumidifier to 20% RH.</span><span class="zh">将 TrolMaster 湿度设为 20%，每台移动除湿机同样设为 20% RH。</span></li>
+      <li><span class="en">Run fresh air intake and exhaust continuously.</span><span class="zh">新风进气与排气持续运行。</span></li>
+      <li><span class="en">All floor fans on, alternating direction — some facing up, some pushing air across the room.</span><span class="zh">所有地面风扇开启，方向交错——部分朝上，部分横向推动空气。</span></li>
+      <li><span class="en">Complete and record the load assessment.</span><span class="zh">完成并记录装载量评估。</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <span class="tag t2"><span class="en">Phase 2 · Days 4–7</span><span class="zh">第2阶段 · 第4–7天</span></span>
+      <h3><span class="en">Controlled drying</span><span class="zh">控制干燥</span></h3>
+    </div>
+    <div class="setpoints">
+      <div class="sp temp"><b>65°F</b><span class="en">Room temperature</span><span class="zh">房间温度</span></div>
+      <div class="sp rh"><b>45%</b><span class="en">TrolMaster + portable dehus</span><span class="zh">TrolMaster 与移动除湿机</span></div>
+    </div>
+    <ul>
+      <li><span class="en">Set room temperature to 65°F and humidity to 45% RH, TrolMaster and portables both.</span><span class="zh">将房间温度设为 65°F，湿度设为 45% RH，TrolMaster 与移动除湿机均需设定。</span></li>
+      <li><span class="en">Fresh air exchange 24 hours a day.</span><span class="zh">新风换气全天24小时运行。</span></li>
+      <li><span class="en">Check whether the TrolMaster sensors need calibration. Use the orange handheld temperature monitor as the reference.</span><span class="zh">检查 TrolMaster 传感器是否需要校准。以橙色手持温度计作为参考基准。</span></li>
+      <li><span class="en"><strong>Phase 2 is the real control lever.</strong> A standard batch lands here, and the extension is Phase 2 conditions carried on. Phase 3 is one hold day.</span><span class="zh"><strong>第2阶段才是真正的控制杠杆。</strong>标准批次在此阶段完成干燥，延长期也是延续第2阶段条件。第3阶段只是单日保持。</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <span class="tag t3"><span class="en">Phase 3 · Day 8</span><span class="zh">第3阶段 · 第8天</span></span>
+      <h3><span class="en">Hold &amp; takedown</span><span class="zh">保持与下架</span></h3>
+    </div>
+    <div class="setpoints">
+      <div class="sp temp"><b>70°F</b><span class="en">Room temperature</span><span class="zh">房间温度</span></div>
+      <div class="sp rh"><b>55%</b><span class="en">TrolMaster + portable dehus</span><span class="zh">TrolMaster 与移动除湿机</span></div>
+    </div>
+    <ul>
+      <li><span class="en">Set <strong>only</strong> if the Day 7 routing read says the batch is tracking to pass. Set Sunday evening so the room is stable Monday morning.</span><span class="zh"><strong>仅当</strong>第7天分流读数显示批次有望达标时才设定。周日傍晚设定，确保周一早晨房间稳定。</span></li>
+      <li><span class="en">Run the three-check gate before anything comes down.</span><span class="zh">在任何花下架之前完成三项判定检查。</span></li>
+      <li><span class="en">Record all readings on the batch record — post-processing needs the entry moisture.</span><span class="zh">将所有读数记录在批次记录上——后处理环节需要入口含水率数据。</span></li>
+    </ul>
+  </div>
+
+  <div class="card ext">
+    <div class="card-top">
+      <span class="tag te"><span class="en">Phase E · Days 9–12</span><span class="zh">E 阶段 · 第9–12天</span></span>
+      <h3><span class="en">Extension</span><span class="zh">延长干燥</span></h3>
+    </div>
+    <div class="setpoints">
+      <div class="sp temp"><b>65°F</b><span class="en">Back to Phase 2</span><span class="zh">回到第2阶段</span></div>
+      <div class="sp rh"><b>45%</b><span class="en">Back to Phase 2</span><span class="zh">回到第2阶段</span></div>
+    </div>
+    <ul>
+      <li><span class="en"><strong>Each extension day requires the Lead's authorization</strong>, recorded on the log with the reason. Extension is not automatic and it is not open-ended.</span><span class="zh"><strong>每一个延长日都需主管授权</strong>，并在日志上记录原因。延长不是自动的，也不是无限期的。</span></li>
+      <li><span class="en">Confirm the room actually went back to 65°F / 45% — not left at Phase 3.</span><span class="zh">确认房间确实已调回 65°F / 45%——而非停留在第3阶段。</span></li>
+      <li><span class="en">Re-run the full three-check gate daily.</span><span class="zh">每天重新执行完整的三项判定检查。</span></li>
+      <li><span class="en"><strong>Scout for mold twice daily.</strong> Extended time at moderate humidity is the botrytis window.</span><span class="zh"><strong>每天巡查霉菌两次。</strong>中等湿度下延长时间正是灰霉病的高风险窗口。</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── DAY 5 ───────────────────────────────── -->
+<section id="day5">
+  <h2><span class="en">Day 5 checkpoint — Friday · mandatory</span><span class="zh">第5天检查点——周五 · 必检</span></h2>
+  <div class="card">
+    <p class="lede">
+      <span class="en">The last day a change can meaningfully move the Day 8 result. It does not get skipped, and the Lead is notified either way — including when no action was needed.</span>
+      <span class="zh">最后一个能实质影响第8天结果的调整日。不得跳过，且无论结果如何都须通知主管——包括无需行动的情况。</span>
+    </p>
+    <ul>
+      <li><span class="en"><strong>Reweigh all three tagged branches.</strong> Calculate percent loss from their harvest day wet weight.</span><span class="zh"><strong>重新称量全部三根标记枝。</strong>计算相对于采收日湿重的失重百分比。</span></li>
+      <li><span class="en"><strong>Take pin meter readings.</strong> Probe through the bud shoulder toward the stem, pins fully sunk. Average 3–5 buds per point, across at least four positions. Second reading on a thin twig at each point. Wipe pins with 70% IPA between samples.</span><span class="zh"><strong>进行针式水分仪读数。</strong>从花肩部朝茎方向插入，探针完全没入。每点取3–5个花头平均值，至少四个位置。每点另取一次细枝读数。每次取样间用70%异丙醇擦拭探针。</span></li>
+    </ul>
+    <div class="tw">
+      <table class="stack">
+        <thead>
+          <tr>
+            <th><span class="en">Finding</span><span class="zh">判定</span></th>
+            <th><span class="en">Reading</span><span class="zh">读数</span></th>
+            <th><span class="en">Action</span><span class="zh">措施</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lead" data-label-en="Finding" data-label-zh="判定"><span class="en">Ahead of pace</span><span class="zh">进度偏快</span></td>
+            <td data-label-en="Reading" data-label-zh="读数"><span class="en">Weight loss over 75%, or buds at or below 12% MC</span><span class="zh">失重超过 75%，或花已达到或低于 12% 含水率</span></td>
+            <td data-label-en="Action" data-label-zh="措施"><span class="en">Raise RH toward 55% early to slow the dry. Notify the Lead.</span><span class="zh">提前将湿度上调至 55% 以减缓干燥。通知主管。</span></td>
+          </tr>
+          <tr>
+            <td class="lead" data-label-en="Finding" data-label-zh="判定"><span class="en">On pace</span><span class="zh">进度正常</span></td>
+            <td data-label-en="Reading" data-label-zh="读数"><span class="en">Weight loss around 55–70%, buds still above 14% MC</span><span class="zh">失重约 55–70%，花仍高于 14% 含水率</span></td>
+            <td data-label-en="Action" data-label-zh="措施"><span class="en">Hold Phase 2 setpoints. Record and notify.</span><span class="zh">维持第2阶段设定值。记录并通知。</span></td>
+          </tr>
+          <tr>
+            <td class="lead" data-label-en="Finding" data-label-zh="判定"><span class="en">Behind pace</span><span class="zh">进度偏慢</span></td>
+            <td data-label-en="Reading" data-label-zh="读数"><span class="en">Weight loss under 50%, or buds above 18% MC</span><span class="zh">失重低于 50%，或花高于 18% 含水率</span></td>
+            <td data-label-en="Action" data-label-zh="措施"><span class="en">Drop RH 5–10% for Days 6–7. Notify the Lead. <strong>Flag the batch as likely to extend</strong> and tell the trim room.</span><span class="zh">第6–7天将湿度下调 5–10%。通知主管。<strong>标记该批次可能延长</strong>并告知修剪房。</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout watch">
+      <span class="lbl"><span class="en">These bands are estimates until NLT has its own curve</span><span class="zh">在 NLT 建立自身曲线之前，这些区间仅为估算值</span></span>
+      <span class="en">The first two or three cycles of branch weights establish the real numbers. Replace these once there is data.</span>
+      <span class="zh">前两到三个周期的标记枝重量数据将确立真实数值。取得数据后请替换这些区间。</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── DAY 7 ───────────────────────────────── -->
+<section id="day7">
+  <h2><span class="en">Day 7 routing decision — Sunday</span><span class="zh">第7天分流判定——周日</span></h2>
+  <div class="card">
+    <p class="lede">
+      <span class="en">Run a short read — one tagged-branch weight and one meter sample. This decides what the room does overnight.</span>
+      <span class="zh">进行一次简短读数——一根标记枝称重加一次水分仪取样。这决定房间当晚的运行状态。</span>
+    </p>
+    <div class="fork">
+      <div class="route-a">
+        <span class="rt"><span class="en">Standard</span><span class="zh">标准路径</span></span>
+        <h4><span class="en">Tracking to pass</span><span class="zh">有望达标</span></h4>
+        <p><span class="en">Weight loss 70%+, buds approaching 12–13%. Set Phase 3 (70°F / 55%) Sunday evening so the room is stable Monday morning.</span><span class="zh">失重 70% 以上，花接近 12–13%。周日傍晚设定第3阶段（70°F / 55%），确保周一早晨房间稳定。</span></p>
+      </div>
+      <div class="route-b">
+        <span class="rt"><span class="en">Extension</span><span class="zh">延长路径</span></span>
+        <h4><span class="en">Clearly short</span><span class="zh">明显不足</span></h4>
+        <p><span class="en">Weight loss under 65%, buds above 14%. Hold Phase 2 conditions — do not set Phase 3. Notify the Lead and the trim room that Monday takedown is at risk.</span><span class="zh">失重低于 65%，花高于 14%。维持第2阶段条件——不要设定第3阶段。通知主管与修剪房，周一下架存在风险。</span></p>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="lbl"><span class="en">Why this read exists</span><span class="zh">此次读数的意义</span></span>
+      <span class="en">Setting Phase 3 on a batch that then fails the Monday gate costs a full day of drying at 55%. The Sunday read is what prevents that.</span>
+      <span class="zh">若对随后未通过周一判定的批次设定了第3阶段，将白白损失一整天在 55% 下的干燥时间。周日读数正是为了避免这种情况。</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── GATE ────────────────────────────────── -->
+<section id="gate">
+  <h2><span class="en">Readiness gate — Day 8 onward, run daily</span><span class="zh">准备判定——第8天起，每日执行</span></h2>
+  <div class="card">
+    <p class="lede">
+      <span class="en">All three checks are taken and recorded. From Day 8 on, this gate runs daily until the batch passes, or reaches Day 12 and escalates.</span>
+      <span class="zh">三项检查全部执行并记录。自第8天起每日执行，直至批次通过，或到达第12天转为上报决策。</span>
+    </p>
+    <div class="callout crit">
+      <span class="lbl"><span class="en">One meter, and it is the reference</span><span class="zh">只有一台水分仪，且它就是基准</span></span>
+      <span class="en">The room runs a single dedicated FLIR MR40. No pin meter sold is calibrated for cannabis — they all read a wood scale — so the 11–12% band is <strong>this meter's number on this flower</strong>. Substituting another meter mid-cycle, even the same model, moves the band without telling you. Check the pins are straight and clean before the cycle starts.</span>
+      <span class="zh">本房间仅使用一台专属的 FLIR MR40。市售针式水分仪均未按大麻校准——读的都是木材刻度——因此 11–12% 区间是<strong>这台仪器在这批花上的读数</strong>。周期中途更换仪器，即使是同型号，也会在无声中改变该区间。周期开始前请检查探针是否平直、洁净。</span>
+    </div>
+    <div class="tw">
+      <table class="stack">
+        <thead>
+          <tr>
+            <th><span class="en">Check</span><span class="zh">检查项</span></th>
+            <th><span class="en">Criterion</span><span class="zh">标准</span></th>
+            <th><span class="en">Note</span><span class="zh">说明</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lead" data-label-en="Check" data-label-zh="检查项"><span class="en">Snap test</span><span class="zh">折断测试</span></td>
+            <td data-label-en="Criterion" data-label-zh="标准"><span class="en">60% or more of small lateral branches snap cleanly</span><span class="zh">60% 或以上的细侧枝能干脆折断</span></td>
+            <td data-label-en="Note" data-label-zh="说明"><span class="en">Pencil-thickness and under. Main stalks still bending is normal — do not wait on them or you will overdry the batch.</span><span class="zh">铅笔粗细及以下。主茎仍能弯曲属正常——不要等待主茎，否则会造成整批过干。</span></td>
+          </tr>
+          <tr>
+            <td class="lead" data-label-en="Check" data-label-zh="检查项"><span class="en">Moisture meter</span><span class="zh">水分仪</span></td>
+            <td data-label-en="Criterion" data-label-zh="标准"><span class="en">Buds average 11–12% MC · thin stems 10–12%</span><span class="zh">花平均 11–12% 含水率 · 细茎 10–12%</span></td>
+            <td data-label-en="Note" data-label-zh="说明"><span class="en">Sample from at least four positions in the room, not one convenient rack.</span><span class="zh">房间内至少取四个位置取样，不能只取一个方便的架位。</span></td>
+          </tr>
+          <tr>
+            <td class="lead" data-label-en="Check" data-label-zh="检查项"><span class="en">Harvest day wet weight</span><span class="zh">采收日湿重</span></td>
+            <td data-label-en="Criterion" data-label-zh="标准"><span class="en">75–80% loss from harvest day wet weight</span><span class="zh">相对采收日湿重失重 75–80%</span></td>
+            <td data-label-en="Note" data-label-zh="说明"><span class="en">The only check that catches a batch whose stems snap while the interior is still wet.</span><span class="zh">唯一能识别"茎已折断但内部仍湿"批次的检查项。</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout crit">
+      <span class="lbl"><span class="en">When the checks disagree</span><span class="zh">检查结果不一致时</span></span>
+      <span class="en"><strong>Weight wins on the wet side.</strong> Dense buds can pass the snap test while still holding water in the interior — stems snapping at only around 60% weight loss is misleading. <strong>The meter wins on the dry side.</strong> Under 10% MC is overdried whatever the weight says, and the cure cannot add moisture back.</span>
+      <span class="zh"><strong>偏湿一侧以重量为准。</strong>密实的花头可能通过折断测试但内部仍含水——失重仅约 60% 时茎已折断具有误导性。<strong>偏干一侧以水分仪为准。</strong>低于 10% 含水率即为过干，无论重量如何，且熟化无法补回水分。</span>
+    </div>
+    <div class="callout">
+      <span class="lbl"><span class="en">Photograph each reading in place</span><span class="zh">在原位拍摄每次读数</span></span>
+      <span class="en">One frame per room position, taken with the pins still sunk in the bud, so the reading, the position, and the probe depth all sit in the same picture. File the four frames with the batch record. Over a few cycles this builds a visual reference for what 11–12% actually looks like — something a number cannot teach the trim crew.</span>
+      <span class="zh">每个房间位置拍摄一张，拍摄时探针仍插在花中，使读数、位置与插入深度同处一张照片内。四张照片随批次记录归档。累积几个周期后即可形成 11–12% 实际形态的视觉参考——这是单靠数字无法教会修剪人员的。</span>
+    </div>
+  </div>
+
+  <h3 style="margin:22px 0 11px"><span class="en">Exceptions at takedown</span><span class="zh">下架时的例外处理</span></h3>
+  <div class="tw">
+    <table class="stack">
+      <thead>
+        <tr>
+          <th><span class="en">Condition</span><span class="zh">情况</span></th>
+          <th><span class="en">Response</span><span class="zh">应对</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="lead" data-label-en="Condition" data-label-zh="情况"><span class="tag pass"><span class="en">Checks pass</span><span class="zh">检查通过</span></span></td>
+          <td data-label-en="Response" data-label-zh="应对"><span class="en">Buck on schedule. Record readings on the batch record. Cure length judged normally by Rob.</span><span class="zh">按计划摘花。将读数记入批次记录。熟化时长由 Rob 正常判断。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Condition" data-label-zh="情况"><span class="tag warn"><span class="en">Wet but workable</span><span class="zh">偏湿但可处理</span></span><br><span style="font-size:13.5px;color:var(--ink-2)"><span class="en">Stems snap, weight loss 65–75%, buds 12–14%</span><span class="zh">茎能折断，失重 65–75%，花 12–14%</span></span></td>
+          <td data-label-en="Response" data-label-zh="应对"><span class="en">Buck. <strong>Flag the lot for a full 3-day cure</strong> and note it on the batch record. Lids off the full 15–20 minutes every morning.</span><span class="zh">摘花。<strong>标记该批次进行完整3天熟化</strong>，并记入批次记录。每天早晨完整开盖 15–20 分钟。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Condition" data-label-zh="情况"><span class="tag fail"><span class="en">Not ready, before Day 12</span><span class="zh">未就绪，第12天之前</span></span><br><span style="font-size:13.5px;color:var(--ink-2)"><span class="en">Weight loss under 65%, buds over 15%</span><span class="zh">失重低于 65%，花高于 15%</span></span></td>
+          <td data-label-en="Response" data-label-zh="应对"><span class="en">Do not buck. Extend one day with the Lead's authorization. Re-run the gate tomorrow.</span><span class="zh">不要摘花。经主管授权延长一天。次日重新执行判定。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Condition" data-label-zh="情况"><span class="tag fail"><span class="en">Not ready, at Day 12</span><span class="zh">未就绪，已到第12天</span></span></td>
+          <td data-label-en="Response" data-label-zh="应对"><span class="en"><strong>Do not buck on the date alone.</strong> Run the full gate, escalate to the Lead and the Supervisor the same day, and record their decision with its cause. Take down: extended cure, verbal handoff, closing readings on the batch record. Keep hanging: twice-daily mold scouting, a stated re-check date, and the room conflict resolved before the next harvest is cut.</span><span class="zh"><strong>不得仅因日期而摘花。</strong>执行完整判定，当天上报主管与上级主管，并记录其决定及原因。若决定下架：延长熟化、口头交接、将结束读数记入批次记录。若决定继续挂晾：每日两次霉菌巡查、明确的复检日期，并在下一批采收前解决房间占用冲突。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Condition" data-label-zh="情况"><span class="tag fail"><span class="en">Overdried</span><span class="zh">过干</span></span><br><span style="font-size:13.5px;color:var(--ink-2)"><span class="en">Buds under 10% MC, weight loss over 82%</span><span class="zh">花低于 10% 含水率，失重超过 82%</span></span></td>
+          <td data-label-en="Response" data-label-zh="应对"><span class="en">Buck on schedule and <strong>notify post-processing</strong>. The cure cannot put moisture back. Overdried flower sheds trichomes in machine trim and breaks up on the sifting tray — handling gets gentled downstream, and the cause gets investigated before the next cycle.</span><span class="zh">按计划摘花并<strong>通知后处理环节</strong>。熟化无法补回水分。过干的花在机器修剪时会脱落腺毛，在筛盘上易碎——下游需减轻处理力度，并在下一周期前查明原因。</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── EXTENSION ───────────────────────────── -->
+<section id="ext">
+  <h2><span class="en">Extension management — Days 9–12</span><span class="zh">延长期管理——第9–12天</span></h2>
+  <div class="card ext">
+    <p class="lede">
+      <span class="en">Every extension day: confirm the room is back at Phase 2 conditions, re-run the gate, and read the setpoint-versus-actual record. That record is the diagnosis.</span>
+      <span class="zh">每个延长日：确认房间已回到第2阶段条件，重新执行判定，并查看设定值与实际值的记录。该记录即为诊断依据。</span>
+    </p>
+    <div class="tw">
+      <table class="stack">
+        <thead>
+          <tr>
+            <th><span class="en">Pattern</span><span class="zh">形态</span></th>
+            <th><span class="en">Diagnosis</span><span class="zh">诊断</span></th>
+            <th><span class="en">Response</span><span class="zh">应对</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lead" data-label-en="Pattern" data-label-zh="形态"><span class="en">Actual RH tracked setpoint all cycle</span><span class="zh">整个周期实际湿度跟随设定值</span></td>
+            <td data-label-en="Diagnosis" data-label-zh="诊断"><span class="en">The load was simply large. The dry is working, it just needs time.</span><span class="zh">纯粹是负荷偏大。干燥正常进行，只是需要时间。</span></td>
+            <td data-label-en="Response" data-label-zh="应对"><span class="en">Continue the extension. Nothing to fix.</span><span class="zh">继续延长。无需修正。</span></td>
+          </tr>
+          <tr>
+            <td class="lead" data-label-en="Pattern" data-label-zh="形态"><span class="en">Actual RH ran consistently above setpoint</span><span class="zh">实际湿度持续高于设定值</span></td>
+            <td data-label-en="Diagnosis" data-label-zh="诊断"><span class="en"><strong>Dehumidification capacity is the constraint, not the setpoint.</strong> Turning the dial lower will do nothing — the room already cannot reach the number it has.</span><span class="zh"><strong>瓶颈在除湿能力，不在设定值。</strong>把数值调低毫无作用——房间连现有目标都达不到。</span></td>
+            <td data-label-en="Response" data-label-zh="应对"><span class="en">Add portable units, reduce fresh-air exchange rate, check for a failed or iced dehumidifier, verify AC is holding. Escalate the same day.</span><span class="zh">增加移动除湿机、降低新风换气量、检查是否有除湿机故障或结冰、确认空调是否稳定。当天上报。</span></td>
+          </tr>
+          <tr>
+            <td class="lead" data-label-en="Pattern" data-label-zh="形态"><span class="en">RH tracked setpoint but temperature ran high</span><span class="zh">湿度跟随设定值但温度偏高</span></td>
+            <td data-label-en="Diagnosis" data-label-zh="诊断"><span class="en">AC control is marginal. Warm air holds more water and the dehus fight it.</span><span class="zh">空调控制偏弱。暖空气含水更多，除湿机需额外负担。</span></td>
+            <td data-label-en="Response" data-label-zh="应对"><span class="en">Escalate. Note it for the load assessment on future cycles.</span><span class="zh">上报。记录以供后续周期的装载量评估参考。</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout crit">
+      <span class="lbl"><span class="en">Day 12 is a mandatory escalation, not an automatic takedown</span><span class="zh">第12天为强制上报，而非自动下架</span></span>
+      <span class="en">Standing policy is that flower does not come down until it is ready, so Day 12 does not force the batch down — it forces a decision. Run the full gate, escalate to the Lead and the Supervisor the same day, and record the decision with its probable cause: load size, dehumidification, AC, hang density. What gets weighed against readiness is mold risk, the room being needed for Monday's harvest, and a downstream schedule that has already slipped. Tell the trim room lead and Rob the same day, not on the new takedown morning.</span>
+      <span class="zh">既定政策是花未达标不下架，因此第12天并不强制批次下架，而是强制作出决策。执行完整判定，当天上报主管与上级主管，并记录决定及可能原因：负荷量、除湿、空调、挂晾密度。需与达标程度一并权衡的是霉菌风险、周一采收需要腾出房间，以及已经延后的下游排程。当天即告知修剪房负责人与 Rob，而非等到新的下架日早晨。</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── DAILY CHECKS ────────────────────────── -->
+<section id="daily">
+  <h2><span class="en">Daily checks — Day 1 through takedown</span><span class="zh">每日检查——第1天至下架日</span></h2>
+  <div class="checks">
+    <label class="check"><input type="checkbox"><span><span class="en">TrolMaster setpoint and every portable dehumidifier setpoint match the phase table.</span><span class="zh">TrolMaster 设定值与每台移动除湿机设定值与阶段表一致。</span></span></label>
+    <label class="check"><input type="checkbox"><span><span class="en">Actual room reading compared to setpoint. Drift over 2°F or over 5% RH corrected and noted.</span><span class="zh">房间实际读数与设定值对比。偏差超过 2°F 或 5% RH 时予以修正并记录。</span></span></label>
+    <label class="check"><input type="checkbox"><span><span class="en"><strong>Actual RH recorded alongside setpoint.</strong> On an extended cycle this column is the diagnosis.</span><span class="zh"><strong>实际湿度与设定值一同记录。</strong>在延长周期中，此栏即为诊断依据。</span></span></label>
+    <label class="check"><input type="checkbox"><span><span class="en">Dehumidifier drains clear, reservoirs not backed up.</span><span class="zh">除湿机排水通畅，储水槽未积满。</span></span></label>
+    <label class="check"><input type="checkbox"><span><span class="en">All fans running. None bumped into pointing at the plants.</span><span class="zh">所有风扇运转正常。无风扇被碰移至直吹植株。</span></span></label>
+    <label class="check"><input type="checkbox"><span><span class="en">Room scouted for mold and botrytis. Anything suspect removed and isolated immediately. <strong>Twice daily from Day 8 on.</strong></span><span class="zh">巡查房间，排查霉菌与灰霉病。可疑物立即移除隔离。<strong>自第8天起每日两次。</strong></span></span></label>
+    <label class="check"><input type="checkbox"><span><span class="en">Lights off, door sealed.</span><span class="zh">灯光关闭，门已密封。</span></span></label>
+    <label class="check"><input type="checkbox"><span><span class="en">Temperature, RH, and observations recorded on the log.</span><span class="zh">温度、湿度及观察结果已记入日志。</span></span></label>
+    <div class="checks-foot">
+      <span id="checkCount">0 / 8</span>
+      <button class="btn" id="clearChecks" type="button"><span class="en">Clear all</span><span class="zh">全部清除</span></button>
+    </div>
+  </div>
+  <p style="margin-top:10px;font-size:13px;color:var(--ink-3)">
+    <span class="en">Checklist state resets on refresh. Record the day's readings on the paper log.</span>
+    <span class="zh">刷新页面后清单状态会重置。请将当日读数记入纸质日志。</span>
+  </p>
+</section>
+
+<!-- ── HANDOFF ─────────────────────────────── -->
+<section id="handoff">
+  <h2><span class="en">Handoff to post-processing</span><span class="zh">交接至后处理</span></h2>
+  <div class="card">
+    <p class="lede">
+      <span class="en">Takedown feeds directly into Stage 1 of the Post-Processing SOP.</span>
+      <span class="zh">下架直接进入后处理 SOP 的第1阶段。</span>
+    </p>
+    <div class="callout crit">
+      <span class="lbl"><span class="en">Flower goes straight to the trim room</span><span class="zh">花直接进入修剪房</span></span>
+      <span class="en">It does not sit in the buck room, a hallway, or on the dry room floor after take-down. Bucking happens in the trim room at 58–62°F / 55–60% RH — the buck room cannot hold that target, the trim room can.</span>
+      <span class="zh">下架后不得停留在摘花房、走廊或干燥房地面。摘花在修剪房进行，条件为 58–62°F / 55–60% RH——摘花房无法维持该目标，修剪房可以。</span>
+    </div>
+    <ul>
+      <li><span class="en">27 gal tote, <strong>6–7 lb max</strong> during cure. Do not begin bucking until the tote is full.</span><span class="zh">27加仑周转箱，熟化期间<strong>最多 6–7 磅</strong>。周转箱装满前不要开始摘花。</span></li>
+      <li><span class="en"><strong>Pass the takedown-day readings forward on the batch record.</strong> Rob judges cure length by moisture — the entry moisture is the starting point for that judgment, and he should not have to guess at it.</span><span class="zh"><strong>将下架当天的读数写入批次记录并传递下去。</strong>Rob 依据含水量判断熟化时长——入口含水率是该判断的起点，不应让他靠猜测。</span></li>
+      <li><span class="en"><strong>On any extended cycle, tell the trim room lead verbally as well as on paper</strong> — and tell them as early as the Day 5 or Day 7 read, not on the takedown day.</span><span class="zh"><strong>任何延长周期都须口头告知修剪房负责人，而不仅是书面记录</strong>——且应在第5天或第7天读数时就告知，而非等到下架当天。</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── TROUBLESHOOTING ─────────────────────── -->
+<section id="trouble">
+  <h2><span class="en">Troubleshooting</span><span class="zh">故障排除</span></h2>
+  <div class="tw">
+    <table class="stack">
+      <thead>
+        <tr>
+          <th><span class="en">Symptom</span><span class="zh">现象</span></th>
+          <th><span class="en">Action</span><span class="zh">措施</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="lead" data-label-en="Symptom" data-label-zh="现象"><span class="en">Room will not hold RH</span><span class="zh">房间无法维持湿度</span></td>
+          <td data-label-en="Action" data-label-zh="措施"><span class="en">Check dehumidifier drains, filters, and door seal. If the fresh air intake is bringing in wet air, reduce the exchange rate and notify the Lead. Do not chase it with temperature.</span><span class="zh">检查除湿机排水、滤网及门封。若新风进气带入湿空气，降低换气量并通知主管。不要用温度去补偿。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Symptom" data-label-zh="现象"><span class="en">Actual RH consistently above setpoint</span><span class="zh">实际湿度持续高于设定值</span></td>
+          <td data-label-en="Action" data-label-zh="措施"><span class="en">Capacity, not setpoint. Lowering the dial will not help. Add portables, cut exchange rate, check for an iced or failed unit, verify AC. <strong>This is the single most common cause of a batch needing extension.</strong></span><span class="zh">这是能力问题，不是设定值问题。调低数值无济于事。增加移动除湿机、降低换气量、检查是否结冰或故障、确认空调。<strong>这是批次需要延长的最常见原因。</strong></span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Symptom" data-label-zh="现象"><span class="en">TrolMaster disagrees with the orange handheld</span><span class="zh">TrolMaster 与橙色手持仪读数不符</span></td>
+          <td data-label-en="Action" data-label-zh="措施"><span class="en">Recalibrate the sensor. Do not compensate by changing setpoints — you will be flying blind for the rest of the cycle.</span><span class="zh">重新校准传感器。不要通过调整设定值来补偿——那样整个周期都将失去参照。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Symptom" data-label-zh="现象"><span class="en">Mold or botrytis found</span><span class="zh">发现霉菌或灰霉病</span></td>
+          <td data-label-en="Action" data-label-zh="措施"><span class="en">Remove and isolate immediately. Do not carry it through the room. Notify the Lead. Increase airflow; do not raise temperature.</span><span class="zh">立即移除并隔离。不要携带其穿过房间。通知主管。加大气流；不要升高温度。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Symptom" data-label-zh="现象"><span class="en">Crispy exterior, soft interior</span><span class="zh">外表干脆、内部柔软</span></td>
+          <td data-label-en="Action" data-label-zh="措施"><span class="en">Case hardening — the dry is outrunning moisture migration. Raise RH immediately and reduce fan speed. Note it on the batch record and plan for a longer cure.</span><span class="zh">表面硬化——干燥速度超过了水分迁移速度。立即提高湿度并降低风扇转速。记入批次记录并安排更长的熟化时间。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Symptom" data-label-zh="现象"><span class="en">Meter readings scattered widely across the room</span><span class="zh">房间内水分仪读数差异很大</span></td>
+          <td data-label-en="Action" data-label-zh="措施"><span class="en">An airflow or hang-density problem, not a meter problem. Reposition fans, open up crowded sections, note the affected positions.</span><span class="zh">这是气流或挂晾密度问题，不是仪器问题。调整风扇位置，疏散拥挤区域，记录受影响位置。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Symptom" data-label-zh="现象"><span class="en">Tagged branches disagree by more than about 10%</span><span class="zh">标记枝之间差异超过约 10%</span></td>
+          <td data-label-en="Action" data-label-zh="措施"><span class="en">The room is drying unevenly. Record which positions are fast and slow, and correct fan placement before the next cycle.</span><span class="zh">房间干燥不均。记录哪些位置偏快、哪些偏慢，并在下一周期前调整风扇布置。</span></td>
+        </tr>
+        <tr>
+          <td class="lead" data-label-en="Symptom" data-label-zh="现象"><span class="en">Batch extends past Day 10 with no clear cause</span><span class="zh">批次延长至第10天后仍无明确原因</span></td>
+          <td data-label-en="Action" data-label-zh="措施"><span class="en">Pull the whole cycle's setpoint-versus-actual record before changing anything. The answer is almost always in that column.</span><span class="zh">在做任何调整之前，先调出整个周期的设定值与实际值记录。答案几乎总在那一栏里。</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── SIGN-OFF ────────────────────────────── -->
+<section id="signoff">
+  <h2><span class="en">Sign-off</span><span class="zh">签核</span></h2>
+  <div class="sign">
+    <label><span><span class="en">Load assessment / track classification</span><span class="zh">装载量评估／路径判定</span></span><input type="text" autocomplete="off"></label>
+    <label><span><span class="en">Phase 1 (Days 1–3) checked by</span><span class="zh">第1阶段（第1–3天）检查人</span></span><input type="text" autocomplete="off"></label>
+    <label><span><span class="en">Phase 2 (Days 4–7) checked by</span><span class="zh">第2阶段（第4–7天）检查人</span></span><input type="text" autocomplete="off"></label>
+    <label><span><span class="en">Day 5 checkpoint reviewed by Lead</span><span class="zh">第5天检查点主管复核</span></span><input type="text" autocomplete="off"></label>
+    <label><span><span class="en">Day 7 routing decision by Lead</span><span class="zh">第7天分流判定（主管）</span></span><input type="text" autocomplete="off"></label>
+    <label><span><span class="en">Extension days authorized by Lead</span><span class="zh">主管授权的延长日</span></span><input type="text" autocomplete="off"></label>
+    <label><span><span class="en">Day 12 escalation — decision and cause</span><span class="zh">第12天上报——决定与原因</span></span><input type="text" autocomplete="off"></label>
+    <label><span><span class="en">Takedown gate results recorded by</span><span class="zh">下架判定结果记录人</span></span><input type="text" autocomplete="off"></label>
+    <label><span><span class="en">Supervisor — Jeff (Uncle Han Sup)</span><span class="zh">主管——Jeff（Uncle Han Sup）</span></span><input type="text" autocomplete="off"></label>
+  </div>
+</section>
+
+<footer>
+  <p><span class="en">NLT Dry Room SOP · Version 1.4 · September 2026 — plain-language weight terms, container test removed.</span><span class="zh">NLT 干燥房 SOP · 版本 1.4 · 2026年9月——重量术语改为通俗表述，移除密封容器测试。</span></p>
+  <p><span class="en">Upstream of: ESG / NLT Post-Processing SOP. Review annually or upon any change to room, controller, dehumidification, or harvest schedule.</span><span class="zh">上游对接：ESG / NLT 后处理 SOP。每年复审一次，或在房间、控制器、除湿设备或采收排程发生变更时复审。</span></p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var body = document.body;
+
+  function setLang(lang){
+    var zh = (lang === "zh");
+    body.classList.toggle("lang-zh", zh);
+    body.classList.toggle("lang-en", !zh);
+    document.documentElement.lang = zh ? "zh-Hans" : "en";
+    var label = zh ? "EN" : "中文";
+    var b = document.getElementById("langBtn");
+    var p = document.getElementById("langPill");
+    if (b) b.textContent = label;
+    if (p) p.textContent = label;
+    swapTableLabels(zh);
+  }
+
+  // Mobile stacked-card labels are read from data-label, swapped on language change.
+  function swapTableLabels(zh){
+    var cells = document.querySelectorAll("td[data-label-en]");
+    for (var i = 0; i < cells.length; i++){
+      var c = cells[i];
+      var v = zh ? c.getAttribute("data-label-zh") : c.getAttribute("data-label-en");
+      if (v) c.setAttribute("data-label", v);
+    }
+  }
+
+  function toggleLang(){
+    setLang(body.classList.contains("lang-zh") ? "en" : "zh");
+  }
+
+  var langBtn = document.getElementById("langBtn");
+  var langPill = document.getElementById("langPill");
+  if (langBtn) langBtn.addEventListener("click", toggleLang);
+  if (langPill) langPill.addEventListener("click", toggleLang);
+
+  // Desktop theme control only. Phones follow the iOS system setting.
+  var THEMES = ["auto","light","dark"];
+  var themeIdx = 0;
+  var themeBtn = document.getElementById("themeBtn");
+  if (themeBtn){
+    themeBtn.addEventListener("click", function(){
+      themeIdx = (themeIdx + 1) % THEMES.length;
+      var t = THEMES[themeIdx];
+      if (t === "auto") body.removeAttribute("data-theme");
+      else body.setAttribute("data-theme", t);
+      themeBtn.setAttribute("aria-pressed", String(t !== "auto"));
+    });
+  }
+
+  // Daily checklist counter
+  var boxes = document.querySelectorAll(".checks .check input");
+  var counter = document.getElementById("checkCount");
+  function updateCount(){
+    var done = 0;
+    for (var i = 0; i < boxes.length; i++){ if (boxes[i].checked) done++; }
+    if (counter) counter.textContent = done + " / " + boxes.length;
+  }
+  for (var i = 0; i < boxes.length; i++){
+    boxes[i].addEventListener("change", updateCount);
+  }
+  var clearBtn = document.getElementById("clearChecks");
+  if (clearBtn){
+    clearBtn.addEventListener("click", function(){
+      for (var j = 0; j < boxes.length; j++){ boxes[j].checked = false; }
+      updateCount();
+    });
+  }
+
+  setLang("en");
+  updateCount();
+})();
+</script>
+</body>
+</html>

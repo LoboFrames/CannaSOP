@@ -69,6 +69,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
+  [hidden] { display: none !important; }
   body {
     background: var(--plane);
     color: var(--text-primary);
@@ -265,7 +266,8 @@
   }
   .chk-list label:hover { background: var(--wash); }
   .chk-list input { margin: 3px 0 0; width: 15px; height: 15px; accent-color: var(--seq-500); flex: none; }
-  .chk-list input:checked + span { color: var(--text-muted); text-decoration: line-through; }
+  .chk-list input:checked + span { color: var(--text-secondary); }
+  .chk-list input:checked + span .stg { color: var(--seq-500); }
   .progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
   .meter { flex: 1; height: 6px; background: var(--grid); border-radius: 3px; overflow: hidden; max-width: 260px; }
   .meter i { display: block; height: 100%; width: 0; background: var(--seq-500); border-radius: 3px; transition: width .15s; }
@@ -277,6 +279,80 @@
     color: var(--text-primary); padding: 2px 0;
   }
   .log-table input:focus { outline: none; border-bottom-color: var(--seq-500); }
+
+  /* ---------- harvest log ---------- */
+  .log-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .pill {
+    font-size: 11.5px; font-weight: 650; letter-spacing: .03em;
+    border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px;
+    color: var(--text-secondary); background: var(--wash); white-space: nowrap;
+  }
+  .pill.ok   { color: #0a7a0a; border-color: rgba(12,163,12,.35); }
+  :root[data-theme="dark"] .pill.ok { color: var(--status-good); }
+  .pill.wait { color: var(--seq-500); border-color: var(--seq-500); }
+  .pill.warn { color: #b07c00; border-color: rgba(250,178,25,.5); }
+  :root[data-theme="dark"] .pill.warn { color: var(--status-warning); }
+
+  .setup-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .setup-row input {
+    flex: 1 1 260px; min-width: 0; font: inherit; font-size: 13px;
+    border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px;
+    background: var(--surface-1); color: var(--text-primary);
+  }
+
+  .harvest-bar { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 18px; }
+  .fld { display: flex; flex-direction: column; gap: 5px; flex: 1 1 220px; min-width: 0; }
+  .fld > span {
+    font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+    font-weight: 650; color: var(--text-muted);
+  }
+  .fld input {
+    font: inherit; font-size: 14px; color: var(--text-primary);
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; min-width: 0;
+  }
+  .fld input:focus { outline: 2px solid var(--seq-500); outline-offset: -1px; }
+  .fld-date { flex: 0 1 170px; }
+  .fld-fac { flex: 0 1 190px; }
+  .fld-note { margin: 0 0 22px; flex: 1 1 100%; }
+  .inits { flex: 0 0 auto; margin-top: 10px; max-width: 140px; }
+
+  .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; align-items: start; }
+  .slot { border: 1px solid var(--border); border-radius: 10px; padding: 14px; background: var(--wash); }
+  .slot-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .slot-head h3 {
+    margin: 0; font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase;
+    font-weight: 650; color: var(--text-muted);
+  }
+  .slot-count { font-size: 12px; font-weight: 650; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .slot.done { background: rgba(12,163,12,.06); border-color: rgba(12,163,12,.3); }
+  .slot.done .slot-count { color: #0a7a0a; }
+  :root[data-theme="dark"] .slot.done .slot-count { color: var(--status-good); }
+  .chk-list .stg {
+    display: inline-block; min-width: 15px; font-size: 11px; font-weight: 700;
+    color: var(--text-muted); font-variant-numeric: tabular-nums;
+  }
+
+  /* history grid */
+  .hist-title { font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); font-weight: 650; margin: 0 0 10px; }
+  .hist { font-size: 13px; }
+  .hist th { text-align: center; }
+  .hist th:first-child, .hist td:first-child { text-align: left; white-space: nowrap; }
+  .hist th:last-child, .hist td:last-child { text-align: left; }
+  .hist .sub-head th { font-size: 9.5px; padding: 2px 6px 6px; border-bottom: 1px solid var(--axis); }
+  .hist thead tr:first-child th { border-bottom: none; padding-bottom: 4px; }
+  .hist td { text-align: center; padding: 8px 6px; font-variant-numeric: tabular-nums; }
+  .hist td.mark { font-size: 14px; line-height: 1; }
+  .hist td.yes { color: #0a7a0a; font-weight: 700; }
+  :root[data-theme="dark"] .hist td.yes { color: var(--status-good); }
+  .hist td.no { color: var(--text-muted); }
+  .hist td.na { color: var(--grid); }
+  .hist td.part { color: #b07c00; font-weight: 700; font-size: 12px; }
+  :root[data-theme="dark"] .hist td.part { color: var(--status-warning); }
+  .hist tr.gap td { background: rgba(250,178,25,.10); }
+  .hist tr.today td { box-shadow: inset 0 0 0 9999px rgba(37,106,191,.06); }
+  .hist td.note { color: var(--text-secondary); font-size: 12.5px; max-width: 220px; }
+  .hist-legend { font-size: 12px; color: var(--text-muted); margin: 10px 0 0; }
 
   /* ========== TABLET & PHONE: tables restyle, flow wraps as cards ========== */
   @media (max-width: 900px) {
@@ -361,7 +437,7 @@
     .stage { border-radius: 10px; margin-bottom: 16px; }
     .stage-head { padding: 14px 14px; gap: 10px; }
     .stage-name { font-size: 16px; }
-    .stage[id] { scroll-margin-top: 56px; }
+    .stage[id], #log { scroll-margin-top: 56px; }
     .tiles { margin-left: 0; width: 100%; gap: 6px; }
     .tile { flex: 1 1 84px; min-width: 0; padding: 6px 9px; }
     .tile .v { font-size: 15px; }
@@ -378,6 +454,16 @@
     .track-lbl { font-size: 11.5px; }
     .vlab { font-size: 11px; }
     .axis span { font-size: 10px; }
+
+    /* harvest log */
+    .slots { grid-template-columns: 1fr; gap: 12px; }
+    .harvest-bar { gap: 10px; }
+    .fld { flex: 1 1 100%; }
+    .fld-date { flex: 1 1 100%; }
+    .fld input, .setup-row input { font-size: 16px; }
+    .harvest-bar button { align-self: flex-start; }
+    .hist { min-width: 720px; }
+    .hist td.note { max-width: 160px; }
 
     /* checklist — bigger tap targets */
     .chk-list label { padding: 10px 8px; font-size: 14.5px; gap: 12px; }
@@ -425,6 +511,7 @@
     <a href="#s3" style="--sc: var(--stage-3)" data-zh="3 机器">3 Machine</a>
     <a href="#s4" style="--sc: var(--stage-4)" data-zh="4 人工">4 Hand Trim</a>
     <a href="#s5" style="--sc: var(--stage-5)" data-zh="5 分装">5 Pack</a>
+    <a href="#log" style="--sc: var(--seq-500)" data-zh="✎ 记录">✎ Log</a>
   </div>
   <div class="controls">
     <button id="langBtnM" class="primary" type="button">中文</button>
@@ -823,85 +910,101 @@
   </div>
 </article>
 
-<!-- ============ CHECKLIST ============ -->
-<section class="panel">
-  <h2 data-zh="每日交互式检查表">Interactive daily checklist</h2>
-  <div class="progress-row">
-    <div class="meter"><i id="meterFill"></i></div>
-    <span class="prog-txt" id="progTxt">0 of 0 complete</span>
-    <button id="resetBtn" type="button" data-zh="重置">Reset</button>
+<!-- ============ HARVEST LOG ============ -->
+<section class="panel" id="log">
+  <div class="log-head">
+    <h2 style="margin:0" data-zh="本批次每日记录">Harvest daily log</h2>
+    <span id="syncPill" class="pill">…</span>
   </div>
-  <div class="check-cols">
+
+  <div id="setupNote" class="callout warn" hidden>
+    <span class="ico">!</span>
     <div>
-      <h3 style="font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);font-weight:650;margin:0 0 6px" data-zh="早晨——修剪前养护">Morning — Pre-Trim Curing</h3>
-      <ul class="chk-list">
-        <li><label><input type="checkbox"><span data-zh="核对养护间读数：60°F / 55% 湿度 / 关灯">Confirm cure room reads 60°F / 55% RH / lights off</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="打开所有料箱的盖子">Lids off all totes</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="由左至右倾倒翻动所有料箱">Tip bins left → right to rotate flower</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="计时敞盖 15–20 分钟">Timer set — lids off 15–20 min</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="重新扣紧所有盖子">Lids snapped back on</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="在每日养护记录表上记录温度／湿度／养护天数">Log temp / RH / cure day below</span></label></li>
-      </ul>
-      <h3 style="font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);font-weight:650;margin:16px 0 6px" data-zh="全天——打枝与修剪">Through the day — Buck &amp; Trim</h3>
-      <ul class="chk-list">
-        <li><label><input type="checkbox"><span data-zh="干燥间下架的花已立即搬入修剪间——没有花滞留在打枝间">Flower off the dry room moved straight into the trim room — none left sitting in the buck room</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="打枝在修剪间内进行，环境达到 58–62°F / 55–60% 目标">Bucking done inside the trim room, hitting the 58–62°F / 55–60% target</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="27 加仑料箱装满后才开始打枝">Bucking only from full 27 gal totes</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="养护用料箱重量核对（27 加仑 6–7 磅 / 54 加仑 12–14 磅）">Cure tote weights verified (27 gal 6–7 lb · 54 gal 12–14 lb)</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="养护料含水量已检查——是否达标由 Rob 判断后开始机器修剪">Cure checked by moisture — Rob confirms it's ready before machine trimming starts</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="人工修剪间：60–62°F / 55–58% 湿度">Hand trim room 60–62°F / 55–58% RH</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="人工修剪时已挑出 A 级；B／C 合在一起">A grade pulled out at the trim table; B/C kept together</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="成品花装满即刻搬入储存间按磅分装">Finished totes moved to storage &amp; pounded out immediately</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="修剪间没有任何敞口、见光的成品花">No uncovered finished flower left in the trim room</span></label></li>
-      </ul>
-    </div>
-    <div>
-      <h3 style="font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);font-weight:650;margin:0 0 6px" data-zh="下班前">End of day</h3>
-      <ul class="chk-list">
-        <li><label><input type="checkbox"><span data-zh="逐个打开每个养护料箱的盖子">Lid off each cure tote</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="每箱轻摇 10–15 秒交换氧气">Shake each bin 10–15 sec to exchange oxygen</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="重新扣紧所有盖子">All lids snapped back on</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="所有成品花已按磅分装，或已折叠内衬并加盖">All finished flower pounded out, or liner folded &amp; lidded</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="火鸡袋袋口折叠（不扎口）后放入料箱">Turkey bags folded over — not tied — and set in totes</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="所有料箱均已加盖存放于储存间（全黑）">All totes lidded and in storage (dark)</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="储存间：55°F / 50% 湿度">Storage room 55°F / 50% RH</span></label></li>
-        <li><label><input type="checkbox"><span data-zh="记录表已填写并签名">Log filled in and initialed</span></label></li>
-      </ul>
-      <div class="callout warn" style="margin-top:16px">
-        <span class="ico">!</span>
-        <div>
-          <span class="lbl" data-zh="提醒">Reminder</span>
-          <p data-zh="本检查表的勾选状态不会保存——刷新页面即清空。请在下方记录表中填写当日数据。">Checkbox state is not saved — it clears on refresh. Use the log below for the daily record.</p>
-        </div>
+      <span class="lbl" data-zh="尚未连接记录表">Not connected to the sheet</span>
+      <p data-zh="请粘贴 Google Apps Script 的网页应用网址（以 /exec 结尾），本设备即可开始同步。">Paste the Google Apps Script web-app URL (it ends in <code>/exec</code>) to start syncing this device.</p>
+      <div class="setup-row">
+        <input id="endpointInput" type="url" placeholder="https://script.google.com/macros/s/…/exec">
+        <button id="endpointSave" type="button" class="primary" data-zh="保存">Save</button>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ============ LOG ============ -->
-<section class="panel">
-  <h2 data-zh="每日养护记录表">Daily cure log</h2>
+  <div id="codeNote" class="callout tip" hidden>
+    <span class="ico">i</span>
+    <div>
+      <span class="lbl" data-zh="输入班组密码">Enter the crew code</span>
+      <p data-zh="首次在本设备使用时需要输入一次班组密码，之后自动记住。请向主管索取密码。">One-time on this device — the log remembers it after that. Ask your supervisor for the code.</p>
+      <div class="setup-row">
+        <input id="codeInput" type="text" autocomplete="off" placeholder="crew code">
+        <button id="codeSave" type="button" class="primary" data-zh="解锁">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="harvest-bar">
+    <label class="fld fld-fac">
+      <span data-zh="生产基地">Facility</span>
+      <input id="facilityInput" list="facilityList" placeholder="ESG" autocomplete="off">
+      <datalist id="facilityList"></datalist>
+    </label>
+    <label class="fld">
+      <span data-zh="批次">Harvest</span>
+      <input id="harvestInput" list="harvestList" placeholder="e.g. GG4 – Aug 2026" autocomplete="off">
+      <datalist id="harvestList"></datalist>
+    </label>
+    <label class="fld fld-date">
+      <span data-zh="日期">Date</span>
+      <input id="dateInput" type="date">
+    </label>
+    <button id="todayBtn" type="button" data-zh="今天">Today</button>
+  </div>
+
+  <div class="slots">
+    <div class="slot" data-slot="am">
+      <div class="slot-head">
+        <h3 data-zh="早晨 · 上班时">Morning · start of day</h3>
+        <span class="slot-count" data-count="am">0/5</span>
+      </div>
+      <ul class="chk-list" data-list="am"></ul>
+      <label class="fld inits"><span data-zh="签名">Initials</span><input id="amBy" maxlength="6" autocomplete="off"></label>
+    </div>
+    <div class="slot" data-slot="pm">
+      <div class="slot-head">
+        <h3 data-zh="下班前">Evening · end of day</h3>
+        <span class="slot-count" data-count="pm">0/5</span>
+      </div>
+      <ul class="chk-list" data-list="pm"></ul>
+      <label class="fld inits"><span data-zh="签名">Initials</span><input id="pmBy" maxlength="6" autocomplete="off"></label>
+    </div>
+  </div>
+
+  <label class="fld fld-note"><span data-zh="备注">Notes</span><input id="noteInput" placeholder="anything worth recording for this day" autocomplete="off"></label>
+
+  <h3 class="hist-title" data-zh="本批次记录">This harvest, day by day</h3>
   <p class="scroll-hint" data-zh="← 左右滑动查看全部列 →">← swipe sideways to see all columns →</p>
-  <div class="tw"><table class="log-table">
+  <div class="tw"><table class="hist">
     <thead>
       <tr>
-        <th data-zh="日期">Date</th>
-        <th data-zh="品种">Strain</th>
-        <th data-zh="料箱编号">Tote ID</th>
-        <th class="num" data-zh="养护天数">Cure day</th>
-        <th class="num" data-zh="温度 °F">Temp °F</th>
-        <th class="num" data-zh="湿度 %">RH %</th>
-        <th class="num" data-zh="早晨开盖 ✓">AM lids off ✓</th>
-        <th class="num" data-zh="下班摇箱 ✓">PM shake ✓</th>
-        <th class="num" data-zh="重量（磅）">Weight lb</th>
-        <th data-zh="签名">Initials</th>
+        <th rowspan="2" data-zh="日期">Date</th>
+        <th colspan="2" data-zh="1 打枝">1 Buck</th>
+        <th colspan="2" data-zh="2 养护">2 Cure</th>
+        <th colspan="2" data-zh="3 机器">3 Machine</th>
+        <th colspan="2" data-zh="4 人工">4 Hand</th>
+        <th colspan="2" data-zh="5 分装">5 Pack</th>
+        <th rowspan="2" data-zh="签名">By</th>
+        <th rowspan="2" data-zh="备注">Notes</th>
+      </tr>
+      <tr class="sub-head">
+        <th data-zh="早">AM</th><th data-zh="晚">PM</th>
+        <th data-zh="早">AM</th><th data-zh="晚">PM</th>
+        <th data-zh="早">AM</th><th data-zh="晚">PM</th>
+        <th data-zh="早">AM</th><th data-zh="晚">PM</th>
+        <th data-zh="早">AM</th><th data-zh="晚">PM</th>
       </tr>
     </thead>
-    <tbody id="logBody"></tbody>
+    <tbody id="histBody"></tbody>
   </table></div>
-  <div style="margin-top:14px" class="controls">
-    <button id="addRowBtn" type="button" data-zh="＋ 添加一行">+ Add row</button>
-  </div>
+  <p class="hist-legend" data-zh="✓ 该环节该时段全部完成 · 3/5 部分完成 · — 未记录 · · 该时段无此环节 · 黄底＝过去的日子仍有遗漏">✓ every check for that stage done · 3/5 partly done · — not recorded · · nothing to check there · shaded = a past day still missing checks</p>
 </section>
 
 <footer class="foot">
@@ -940,15 +1043,30 @@
       btn.setAttribute("aria-label", lang === "zh" ? "Switch to English" : "切换到中文");
     });
     drawCharts();
-    updateProgress();
+    render();
+    updatePill();
   }
   langBtns.forEach(function (btn) {
     if (btn) btn.addEventListener("click", function () { applyLang(lang === "en" ? "zh" : "en"); });
   });
 
   var T = {
-    en: { room: "Room", target: "Target", range: "Acceptable range", single: "Target value", temp: "Temperature", rh: "Relative humidity", of: function (a, b) { return a + " of " + b + " complete"; } },
-    zh: { room: "房间", target: "目标", range: "可接受区间", single: "目标值", temp: "温度", rh: "相对湿度", of: function (a, b) { return "已完成 " + a + " / " + b; } }
+    en: {
+      range: "Acceptable range", single: "Target value", temp: "Temperature", rh: "Relative humidity",
+      synced: "Synced", saving: "Saving…", notConnected: "Not connected",
+      queued: function (n) { return "Offline — " + n + " waiting"; },
+      needCode: "Enter crew code",
+      needHarvest: "Fill in facility and harvest first",
+      empty: "No days logged for this facility + harvest yet."
+    },
+    zh: {
+      range: "可接受区间", single: "目标值", temp: "温度", rh: "相对湿度",
+      synced: "已同步", saving: "保存中…", notConnected: "未连接",
+      queued: function (n) { return "离线——" + n + " 条待上传"; },
+      needCode: "请输入班组密码",
+      needHarvest: "请先填写生产基地和批次",
+      empty: "该基地／批次暂无记录。"
+    }
   };
   function t(k) { return T[lang][k]; }
 
@@ -1064,41 +1182,309 @@
     buildChart(document.getElementById("rhChart"), "rh", [46, 62], [46, 50, 54, 58, 62], "%", "rh");
   }
 
-  /* ---------------- checklist progress (in-memory only) ---------------- */
-  var boxes = Array.prototype.slice.call(document.querySelectorAll(".chk-list input"));
-  var fill = document.getElementById("meterFill");
-  var progTxt = document.getElementById("progTxt");
-  function updateProgress() {
-    var done = boxes.filter(function (b) { return b.checked; }).length;
-    fill.style.width = (boxes.length ? (done / boxes.length) * 100 : 0) + "%";
-    progTxt.textContent = t("of")(done, boxes.length);
-  }
-  boxes.forEach(function (b) { b.addEventListener("change", updateProgress); });
-  document.getElementById("resetBtn").addEventListener("click", function () {
-    boxes.forEach(function (b) { b.checked = false; });
-    updateProgress();
-  });
+  /* ================= HARVEST LOG =================
+     Ticks sync to a Google Sheet through an Apps Script web app.
+     Paste your deployed /exec URL below (or use the in-page setup box).
+     Everything also caches locally, so the log keeps working with no signal
+     and pushes whatever is queued as soon as the connection is back.        */
 
-  /* ---------------- log rows ---------------- */
-  var logBody = document.getElementById("logBody");
-  function addRow() {
-    var tr = document.createElement("tr");
-    for (var i = 0; i < 10; i++) {
-      var td = document.createElement("td");
-      if (i >= 3 && i <= 8) td.className = "num";
-      var inp = document.createElement("input");
-      inp.type = "text";
-      inp.setAttribute("aria-label", "log field");
-      td.appendChild(inp);
-      tr.appendChild(td);
-    }
-    logBody.appendChild(tr);
+  var SHEET_ENDPOINT = "";           /* <-- paste your Apps Script /exec URL here */
+
+  var LS_ENDPOINT = "sopEndpoint", LS_CACHE = "sopLog:v1", LS_QUEUE = "sopQueue:v1", LS_LAST = "sopLast:v1", LS_CODE = "sopCode";
+  var SLOTS = ["am", "pm"];
+  var TASKS = {
+    am: [
+      { id: "2am-env",   stage: 2, en: "Cure room reads 60°F / 55% RH, lights off", zh: "养护间读数 60°F / 55% 湿度，关灯" },
+      { id: "2am-lids",  stage: 2, en: "Lids off all totes", zh: "打开所有料箱的盖子" },
+      { id: "2am-tip",   stage: 2, en: "Bins tipped left → right to rotate the flower", zh: "由左至右倾倒翻箱，轮换花的位置" },
+      { id: "2am-wait",  stage: 2, en: "Lids left off 15–20 minutes", zh: "盖子敞开 15–20 分钟" },
+      { id: "2am-close", stage: 2, en: "Lids snapped back on", zh: "重新扣紧盖子" },
+      { id: "3am-env",   stage: 3, en: "Machine trim room at 60°F / 55% RH", zh: "机器修剪间 60°F / 55% 湿度" },
+      { id: "4am-env",   stage: 4, en: "Hand trim room at 60–62°F / 55–58% RH", zh: "人工修剪间 60–62°F / 55–58% 湿度" },
+      { id: "5am-env",   stage: 5, en: "Storage at 55°F / 50% RH", zh: "储存间 55°F / 50% 湿度" }
+    ],
+    pm: [
+      { id: "1pm-move",  stage: 1, en: "Take-down went straight into the trim room — nothing left in the buck room or hallway", zh: "下架的花已直接进入修剪间——打枝间／走廊没有滞留" },
+      { id: "1pm-full",  stage: 1, en: "Bucking only started from full 27 gal totes", zh: "27 加仑料箱装满后才开始打枝" },
+      { id: "1pm-weigh", stage: 1, en: "Cure totes weighed — 6–7 lb per 27 gal · 12–14 lb per 54 gal", zh: "养护料箱已称重——27 加仑 6–7 磅 · 54 加仑 12–14 磅" },
+      { id: "2pm-lids",  stage: 2, en: "Lid off each cure tote", zh: "逐个打开每个养护料箱的盖子" },
+      { id: "2pm-shake", stage: 2, en: "Each bin shaken 10–15 seconds", zh: "每箱摇动 10–15 秒" },
+      { id: "2pm-close", stage: 2, en: "Lids snapped back on", zh: "重新扣紧盖子" },
+      { id: "3pm-ready", stage: 3, en: "Cure judged ready by moisture before machine trimming started (Rob)", zh: "机器修剪前已由 Rob 按含水量判断养护达标" },
+      { id: "3pm-env",   stage: 3, en: "Machine trim room still at 60°F / 55% RH", zh: "机器修剪间仍为 60°F / 55% 湿度" },
+      { id: "4pm-grade", stage: 4, en: "A grade pulled out while trimming; B and C kept together", zh: "修剪时已挑出 A 级；B 与 C 合在一起" },
+      { id: "4pm-pound", stage: 4, en: "Finished totes taken to storage immediately and pounded out", zh: "成品花装满即刻搬入储存间并按磅分装" },
+      { id: "4pm-light", stage: 4, en: "Nothing left uncovered or exposed to light in the trim room", zh: "修剪间没有敞口、见光的花" },
+      { id: "4pm-fold",  stage: 4, en: "Anything not pounded out: liner folded long sides then short, lid on", zh: "未能分装的：内衬先折长边再折短边，扣上盖子" },
+      { id: "5pm-bags",  stage: 5, en: "Turkey bags folded over — not tied", zh: "火鸡袋袋口折叠——不扎口" },
+      { id: "5pm-totes", stage: 5, en: "All totes lidded and in storage, dark", zh: "所有料箱加盖存放于储存间，全黑" }
+    ]
+  };
+  var TASK_IDS = TASKS.am.map(function (x) { return x.id; }).concat(TASKS.pm.map(function (x) { return x.id; }));
+
+  function ls(k, v) {
+    try {
+      if (v === undefined) return localStorage.getItem(k);
+      if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v);
+    } catch (e) { return null; }
   }
-  for (var i = 0; i < 8; i++) addRow();
-  document.getElementById("addRowBtn").addEventListener("click", addRow);
+  function endpoint() {
+    var saved = ls(LS_ENDPOINT);
+    var url = (SHEET_ENDPOINT || saved || "").trim();
+    return /^https:\/\/script\.google\.com\/.+\/exec$/.test(url) ? url : "";
+  }
+
+  var entries = {};                 /* "harvest||date" -> record */
+  var harvests = [];
+  var facilities = [];
+  try { var c = JSON.parse(ls(LS_CACHE) || "{}"); entries = c.entries || {}; harvests = c.harvests || []; facilities = c.facilities || []; } catch (e) {}
+  function saveCache() { ls(LS_CACHE, JSON.stringify({ entries: entries, harvests: harvests, facilities: facilities })); }
+
+  var queue = [];
+  try { queue = JSON.parse(ls(LS_QUEUE) || "[]"); } catch (e) {}
+  function saveQueue() { ls(LS_QUEUE, JSON.stringify(queue)); }
+
+  function todayISO() {
+    var d = new Date(), p = function (n) { return (n < 10 ? "0" : "") + n; };
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+  }
+  function key(f, h, d) { return f + "||" + h + "||" + d; }
+  function blank() { return { tasks: {}, amBy: "", pmBy: "", note: "", updated: 0 }; }
+  function rec(f, h, d, make) {
+    var k = key(f, h, d);
+    if (!entries[k] && make) entries[k] = blank();
+    return entries[k] || blank();
+  }
+
+  var harvestInput = document.getElementById("harvestInput");
+  var dateInput = document.getElementById("dateInput");
+  var noteInput = document.getElementById("noteInput");
+  var amBy = document.getElementById("amBy");
+  var pmBy = document.getElementById("pmBy");
+  var histBody = document.getElementById("histBody");
+  var syncPill = document.getElementById("syncPill");
+  var setupNote = document.getElementById("setupNote");
+  var harvestList = document.getElementById("harvestList");
+  var facilityInput = document.getElementById("facilityInput");
+  var facilityList = document.getElementById("facilityList");
+  var DEFAULT_FACILITIES = ["ESG", "NLT"];
+  var codeNote = document.getElementById("codeNote");
+  function code() { return (ls(LS_CODE) || "").trim(); }
+  function showGates() {
+    setupNote.hidden = !!endpoint();
+    codeNote.hidden = !endpoint() || !!code();
+  }
+
+  var last = {};
+  try { last = JSON.parse(ls(LS_LAST) || "{}"); } catch (e) {}
+  facilityInput.value = last.facility || "";
+  harvestInput.value = last.harvest || "";
+  dateInput.value = todayISO();
+  if (last.by) { amBy.value = last.by; pmBy.value = last.by; }
+
+  /* ---- build the two tick lists ---- */
+  SLOTS.forEach(function (slot) {
+    var ul = document.querySelector('[data-list="' + slot + '"]');
+    TASKS[slot].forEach(function (task) {
+      var li = document.createElement("li");
+      var label = document.createElement("label");
+      var box = document.createElement("input");
+      box.type = "checkbox"; box.dataset.task = task.id;
+      var span = document.createElement("span");
+      span.innerHTML = '<span class="stg">' + task.stage + '</span> ' + task.en;
+      span.setAttribute("data-zh", '<span class="stg">' + task.stage + '</span> ' + task.zh);
+      span.setAttribute("data-en", span.innerHTML);
+      nodes.push(span);
+      label.appendChild(box); label.appendChild(span);
+      li.appendChild(label); ul.appendChild(li);
+      box.addEventListener("change", function () { setTask(task.id, box.checked); });
+    });
+  });
+  var taskBoxes = Array.prototype.slice.call(document.querySelectorAll("[data-task]"));
+
+  /* ---- writes ---- */
+  function touch(fn) {
+    var f = (facilityInput.value || "").trim(), h = (harvestInput.value || "").trim(), d = dateInput.value;
+    if (!f || !h || !d) { flash(T[lang].needHarvest); return null; }
+    var r = rec(f, h, d, true);
+    fn(r);
+    r.updated = Date.now();
+    entries[key(f, h, d)] = r;
+    if (harvests.indexOf(h) < 0) { harvests.push(h); harvests.sort(); }
+    if (facilities.indexOf(f) < 0) { facilities.push(f); facilities.sort(); }
+    renderLists();
+    saveCache();
+    enqueue(f, h, d, r);
+    render();
+    ls(LS_LAST, JSON.stringify({ facility: f, harvest: h, by: amBy.value || pmBy.value || "" }));
+    return r;
+  }
+  function setTask(id, on) { touch(function (r) { r.tasks[id] = !!on; }); }
+  function enqueue(f, h, d, r) {
+    queue = queue.filter(function (q) { return !(q.facility === f && q.harvest === h && q.date === d); });
+    queue.push({ facility: f, harvest: h, date: d, tasks: r.tasks, amBy: r.amBy, pmBy: r.pmBy, note: r.note, updated: r.updated });
+    saveQueue(); flush();
+  }
+
+  /* ---- sync ---- */
+  var syncing = false;
+  function setPill(cls, text) { syncPill.className = "pill " + cls; syncPill.textContent = text; }
+  function flash(msg) { setPill("warn", msg); setTimeout(updatePill, 2500); }
+  function updatePill() {
+    if (!endpoint()) { setPill("warn", T[lang].notConnected); return; }
+    if (!code()) { setPill("warn", T[lang].needCode); return; }
+    if (syncing) { setPill("wait", T[lang].saving); return; }
+    if (queue.length) { setPill("warn", T[lang].queued(queue.length)); return; }
+    setPill("ok", T[lang].synced);
+  }
+  function flush() {
+    var url = endpoint();
+    if (!url || !code() || syncing || !queue.length) { updatePill(); return; }
+    syncing = true; updatePill();
+    var item = queue[0];
+    var payload = {};
+    Object.keys(item).forEach(function (k) { payload[k] = item[k]; });
+    payload.code = code();
+    fetch(url, { method: "POST", body: JSON.stringify(payload) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.auth === false) { ls(LS_CODE, null); syncing = false; showGates(); updatePill(); return; }
+        if (!res || !res.ok) throw new Error("rejected");
+        queue.shift(); saveQueue(); syncing = false; updatePill();
+        if (queue.length) flush();
+      })
+      .catch(function () { syncing = false; updatePill(); });
+  }
+  function pull() {
+    var url = endpoint(), h = (harvestInput.value || "").trim(), f = (facilityInput.value || "").trim();
+    if (!url) { updatePill(); return; }
+    if (!code()) { showGates(); updatePill(); return; }
+    fetch(url + "?facility=" + encodeURIComponent(f) + "&harvest=" + encodeURIComponent(h) + "&code=" + encodeURIComponent(code()))
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.auth === false) { ls(LS_CODE, null); showGates(); updatePill(); return; }
+        if (!res || !res.ok) return;
+        if (res.harvests) harvests = res.harvests;
+        if (res.facilities) facilities = res.facilities;
+        renderLists();
+        (res.rows || []).forEach(function (row) {
+          var k = key(row.facility || "", row.harvest, row.date), mine = entries[k];
+          if (!mine || (row.updated || 0) >= (mine.updated || 0)) {
+            entries[k] = { tasks: row.tasks || {}, amBy: row.amBy || "", pmBy: row.pmBy || "", note: row.note || "", updated: row.updated || 0 };
+          }
+        });
+        saveCache(); render(); updatePill();
+      })
+      .catch(function () { updatePill(); });
+  }
+
+  /* ---- render ---- */
+  function renderLists() {
+    harvestList.innerHTML = "";
+    harvests.forEach(function (h) {
+      var o = document.createElement("option"); o.value = h; harvestList.appendChild(o);
+    });
+    facilityList.innerHTML = "";
+    DEFAULT_FACILITIES.concat(facilities).filter(function (v, i, a) { return a.indexOf(v) === i; })
+      .forEach(function (f) { var o = document.createElement("option"); o.value = f; facilityList.appendChild(o); });
+  }
+  function render() {
+    var f = (facilityInput.value || "").trim(), h = (harvestInput.value || "").trim(), d = dateInput.value;
+    var r = rec(f, h, d, false);
+    taskBoxes.forEach(function (b) { b.checked = !!r.tasks[b.dataset.task]; });
+    if (document.activeElement !== amBy) amBy.value = r.amBy || amBy.value || "";
+    if (document.activeElement !== pmBy) pmBy.value = r.pmBy || pmBy.value || "";
+    if (document.activeElement !== noteInput) noteInput.value = r.note || "";
+    SLOTS.forEach(function (slot) {
+      var done = TASKS[slot].filter(function (x) { return r.tasks[x.id]; }).length;
+      var el = document.querySelector('[data-slot="' + slot + '"]');
+      el.querySelector("[data-count]").textContent = done + "/" + TASKS[slot].length;
+      el.classList.toggle("done", done === TASKS[slot].length);
+    });
+    renderHistory(f, h);
+  }
+  function renderHistory(f, h) {
+    histBody.innerHTML = "";
+    var today = todayISO();
+    var prefix = f + "||" + h + "||";
+    var dates = Object.keys(entries)
+      .filter(function (k) { return k.indexOf(prefix) === 0; })
+      .map(function (k) { return k.split("||")[2]; });
+    if (dates.indexOf(dateInput.value) < 0 && dateInput.value) dates.push(dateInput.value);
+    dates.sort().reverse();
+    if (!f || !h || !dates.length) {
+      var tr0 = document.createElement("tr");
+      var td0 = document.createElement("td");
+      td0.colSpan = 13; td0.className = "no"; td0.style.textAlign = "left";
+      td0.textContent = T[lang].empty;
+      tr0.appendChild(td0); histBody.appendChild(tr0);
+      return;
+    }
+    dates.forEach(function (d) {
+      var r = rec(f, h, d, false), tr = document.createElement("tr");
+      var missing = TASK_IDS.filter(function (id) { return !r.tasks[id]; }).length;
+      if (d < today && missing) tr.className = "gap";
+      if (d === today) tr.className += " today";
+      var td = document.createElement("td");
+      td.textContent = d;
+      tr.appendChild(td);
+      [1, 2, 3, 4, 5].forEach(function (n) {
+        ["am", "pm"].forEach(function (slot) {
+          var items = TASKS[slot].filter(function (x) { return x.stage === n; });
+          var c = document.createElement("td");
+          if (!items.length) { c.className = "mark na"; c.textContent = "·"; tr.appendChild(c); return; }
+          var done = items.filter(function (x) { return r.tasks[x.id]; }).length;
+          if (done === items.length) { c.className = "mark yes"; c.textContent = "✓"; }
+          else if (done === 0)       { c.className = "mark no";  c.textContent = "—"; }
+          else                       { c.className = "mark part"; c.textContent = done + "/" + items.length; }
+          tr.appendChild(c);
+        });
+      });
+      var by = document.createElement("td");
+      by.textContent = [r.amBy, r.pmBy].filter(Boolean).join(" / ");
+      by.style.textAlign = "left";
+      tr.appendChild(by);
+      var note = document.createElement("td");
+      note.className = "note"; note.textContent = r.note || "";
+      tr.appendChild(note);
+      histBody.appendChild(tr);
+    });
+  }
+
+  /* ---- wiring ---- */
+  facilityInput.addEventListener("change", function () { render(); pull(); });
+  harvestInput.addEventListener("change", function () { render(); pull(); });
+  dateInput.addEventListener("change", render);
+  document.getElementById("todayBtn").addEventListener("click", function () {
+    dateInput.value = todayISO(); render();
+  });
+  amBy.addEventListener("change", function () { touch(function (r) { r.amBy = amBy.value.trim(); }); });
+  pmBy.addEventListener("change", function () { touch(function (r) { r.pmBy = pmBy.value.trim(); }); });
+  noteInput.addEventListener("change", function () { touch(function (r) { r.note = noteInput.value.trim(); }); });
+
+  document.getElementById("endpointSave").addEventListener("click", function () {
+    var v = document.getElementById("endpointInput").value.trim();
+    ls(LS_ENDPOINT, v || null);
+    showGates(); updatePill(); pull();
+  });
+  document.getElementById("codeSave").addEventListener("click", function () {
+    var v = document.getElementById("codeInput").value.trim();
+    if (!v) return;
+    ls(LS_CODE, v);
+    document.getElementById("codeInput").value = "";
+    showGates(); updatePill(); pull(); flush();
+  });
+  window.addEventListener("online", flush);
+
+  showGates();
+  renderLists();
+  render();
+  updatePill();
+  pull();
+  flush();
+  setInterval(function () { flush(); pull(); }, 60000);
 
   drawCharts();
-  updateProgress();
 })();
 </script>
 </body>
